@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "foresightGraduation",
+    "slug": "foresightGraduation",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/mark.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#fff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#fff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

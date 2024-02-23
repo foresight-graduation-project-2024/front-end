@@ -99,7 +99,7 @@ export default function App() {
             component={TasksOverview}
             options={{ headerShown: false }}
           />
-          {/* <Stack.Screen name="Task" component={ManageTasks} /> */}
+          <Stack.Screen name="Board" component={ManageTasks} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

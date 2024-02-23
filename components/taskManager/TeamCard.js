@@ -1,23 +1,17 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 
 const TeamCard = (props) => {
   return (
-    <TouchableOpacity style={styles.container}>
-      <View style={styles.content}>
-        <Image source={props.teamLogo} style={styles.teamLogo} />
-        <View>
-          <Text style={[styles.teamName, { fontSize: 16 }]}>
-            {props.teamName}
-          </Text>
-          <Text style={styles.teamName}>{props.teamDescription}</Text>
-        </View>
+    <TouchableOpacity style={styles.container} onPress={props.onPress}>
+      <Text>{props.teamKey}</Text>
+      <View style={styles.teamDetails}>
+        <Text style={styles.teamName}>{props.teamName}</Text>
+        <Text>
+          {props.teamDesc.length > 25
+            ? props.teamDesc.substring(0, 25) + " ..."
+            : props.teamDesc}
+        </Text>
       </View>
       <Image
         source={require("../../assets/chevron_left.png")}
@@ -35,19 +29,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginVertical: 10,
+    paddingHorizontal: 8,
   },
-  content: {
-    flexDirection: "row",
+  teamDetails: {
+    width: "60%",
     justifyContent: "center",
-    alignItems: "center",
-  },
-  teamLogo: {
-    width: 36,
-    height: 36,
-    marginRight: 16,
   },
   teamName: {
-    justifyContent: "center",
+    fontSize: 16,
+    fontWeight: "500",
+    marginBottom: 2,
   },
   icon: {
     width: 24,

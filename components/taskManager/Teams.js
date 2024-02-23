@@ -1,20 +1,20 @@
-import React, { useLayoutEffect } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import React, { useLayoutEffect, useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 
 import { authLogout } from "../../store/actions/Authentication";
 import { Colors } from "../../constants/config";
 import TeamCard from "./TeamCard";
+import AddTeamModal from "./../models/AddTeamModal";
+import { getAllTeams, getTeamDetails } from "../../store/actions/Tasks";
+import { getUsers } from "../../store/actions/Users";
 
 const Teams = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
+  const teams = useSelector((state) => state.tasks.teams);
+  const [showAddIssue, setShowAddIssue] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -31,12 +31,14 @@ const Teams = ({ navigation }) => {
               name="add"
               size={24}
               color="white"
-              onPress={addIssueHandler}
+              onPress={addTeamHandler}
             />
           )}
         </View>
       ),
     });
+    dispatch(getAllTeams());
+    dispatch(getUsers());
   }, []);
 
   const logoutHandler = () => {
@@ -44,22 +46,41 @@ const Teams = ({ navigation }) => {
     navigation.navigate("Foresight");
   };
 
-  const addIssueHandler = () => {}
+  const addTeamHandler = () => {
+    setShowAddIssue(true);
+  };
+
+  const closeAddIssue = () => {
+    setShowAddIssue(false);
+  };
+
+  const teamTasksHandler = async (data) => {
+    const resp = await dispatch(getTeamDetails(data.teamId));
+    resp && navigation.navigate("Board", { data });
+  };
 
   return (
     <View style={styles.container}>
+      <AddTeamModal
+        showModal={showAddIssue}
+        closeModal={closeAddIssue}
+        navigation={navigation}
+      />
       <Text style={styles.headerText}>All teams</Text>
       <ScrollView>
-        <TeamCard
-          teamLogo={require("../../assets/project-management.png")}
-          teamName="team1"
-          teamDescription="This is a test for team 1"
-        />
-        <TeamCard
-          teamLogo={require("../../assets/team.png")}
-          teamName="team2"
-          teamDescription="This is a test for team 1"
-        />
+        {teams.length > 0 ? (
+          teams.map((data, index) => (
+            <TeamCard
+              key={index}
+              teamName={data.name}
+              teamDesc={data.description}
+              teamKey={data.signature}
+              onPress={() => teamTasksHandler(data)}
+            />
+          ))
+        ) : (
+          <Text style={styles.noTeam}>No teams exist!</Text>
+        )}
       </ScrollView>
     </View>
   );
@@ -81,6 +102,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "500",
     marginBottom: 4,
+  },
+  noTeam: {
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 48,
   }
 });
 

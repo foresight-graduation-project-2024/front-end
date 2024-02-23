@@ -1,7 +1,8 @@
-import { UI_START_LOADING, UI_STOP_LOADING } from "../actions/actionTypes";
+import { UI_START_LOADING, UI_STOP_LOADING, SET_LANGUAGE } from "../actions/actionTypes";
 
 const initialState = {
   isLoading: false,
+  language: null,
 };
 
 const UIReducer = (state = initialState, action) => {
@@ -15,6 +16,11 @@ const UIReducer = (state = initialState, action) => {
       return {
         ...state,
         isLoading: false
+      };
+    case SET_LANGUAGE:
+      return {
+        ...state,
+        language: action.language || 'ar'
       };
     default:
       return state;

@@ -62,8 +62,7 @@ const ChangePasswordModal = (props) => {
           )}
           <Button
             onPress={changePasswordHandler}
-            backgroundColor={Colors.primary}
-            marginTop={6}
+            btnStyle={styles.btnStyle}
           >
             {isLoading ? <DotPulse /> : "Save"}
           </Button>
@@ -107,6 +106,10 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     fontSize: 12,
   },
+  btnStyle: {
+    backgroundColor: Colors.primary,
+    marginTop: 6
+  }
 });
 
 export default ChangePasswordModal;

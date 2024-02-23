@@ -37,16 +37,17 @@ const DeActivateUserModal = (props) => {
           <View style={styles.buttonsContainer}>
             <Button
               onPress={props.user.enabled ? deActivateHandler : activateHandler}
-              backgroundColor={
-                props.user.enabled ? Colors.error : Colors.primary
-              }
+              btnStyle={{
+                backgroundColor: props.user.enabled
+                  ? Colors.error
+                  : Colors.primary,
+              }}
             >
               {props.user.enabled ? "Deactivate" : "Activate"}
             </Button>
             <Button
               onPress={props.closeModal}
-              backgroundColor={Colors.dammed}
-              color={Colors.black}
+              btnStyle={styles.btnStyle}
             >
               {"Cancel"}
             </Button>
@@ -92,6 +93,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 6,
   },
+  btnStyle: {
+    backgroundColor: Colors.dammed,
+    color: Colors.black
+  }
 });
 
 export default DeActivateUserModal;

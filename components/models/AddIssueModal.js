@@ -1,27 +1,30 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   StyleSheet,
-  TouchableOpacity,
-  Image,
-  ScrollView,
 } from "react-native";
 import Modal from "react-native-modal";
 import { Colors } from "../../constants/config";
 import Input from "../custom/Input";
 import Dropdown from "../custom/Dropdown";
+import DotPulse from "../custom/DotPulse";
+import Button from "../custom/Button";
+import { useSelector } from 'react-redux';
 
+// TODO: for edit also
 const AddIssueModal = (props) => {
+  const isLoading = useSelector(state => state.ui.isLoading);
+
+  const [dropdowns, setDropdowns] = useState(initialDropdownState);
+  const [summary, setSummary] = useState("");
+  const [description, setDescription] = useState("");
+
   const initialDropdownState = {
     team: { isVisible: false, selected: props.teams[0] || "" },
     status: { isVisible: false, selected: props.teams[0] || "" },
     assignee: { isVisible: false, selected: props.members[0] || "" },
     label: { isVisible: false, selected: props.labels[0] || "" },
   };
-  const [dropdowns, setDropdowns] = useState(initialDropdownState);
-  const [summary, setSummary] = useState("");
-  const [description, setDescription] = useState("");
 
   const STATUS = ["TODO", "DONE", "INPROGRESS"];
 
@@ -68,17 +71,18 @@ const AddIssueModal = (props) => {
             />
           </View>
 
-          <Dropdown
+          {/* <Dropdown
             isVisible={dropdowns.team.isVisible}
             toggleHandler={() => toggleDropdown("team")}
             items={props.teams}
             selectItemHandler={(item) => selectItem("team", item)}
             label="Team"
-            selectedItem={dropdowns.team.selected}
+            selectedItem={dropdowns.team?.selected}
             labelMarginRight={-36}
-          />
+          /> */}
 
-          <Dropdown
+          {/* TODO STATUS WAITING -> ALWAYS */}
+          {/* <Dropdown
             isVisible={dropdowns.status.isVisible}
             toggleHandler={() => toggleDropdown("status")}
             items={STATUS}
@@ -86,9 +90,9 @@ const AddIssueModal = (props) => {
             label="Status"
             selectedItem={dropdowns.status.selected}
             labelMarginRight={-42}
-          />
+          /> */}
 
-          <Dropdown
+          {/* <Dropdown
             isVisible={dropdowns.assignee.isVisible}
             toggleHandler={() => toggleDropdown("assignee")}
             items={props.members}
@@ -96,9 +100,9 @@ const AddIssueModal = (props) => {
             label="Assignee"
             selectedItem={dropdowns.assignee.selected}
             labelMarginRight={-58}
-          />
+          /> */}
 
-          <Dropdown
+          {/* <Dropdown
             isVisible={dropdowns.label.isVisible}
             toggleHandler={() => toggleDropdown("label")}
             items={props.labels}
@@ -106,7 +110,26 @@ const AddIssueModal = (props) => {
             label="Label"
             selectedItem={dropdowns.label.selected}
             labelMarginRight={-38}
-          />
+          /> */}
+
+          {/* TODO: Add start date, DeadLine */}
+
+          <View style={styles.buttons}>
+            <Button
+              onPress={() => {}}
+              btnStyle={[styles.btnStyle, styles.activeBtnStyle]}
+              >
+              {isLoading ? <DotPulse /> : "Add"}
+            </Button>
+            <Button
+              onPress={() => {}}
+              btnStyle={styles.btnStyle}
+              textColor={Colors.lightBlack}            
+            >
+              {"Cancel"}
+            </Button>
+          </View>
+
         </View>
       </View>
     </Modal>
@@ -137,6 +160,19 @@ const styles = StyleSheet.create({
   inputWidth: { 
     width: "90%" 
   },
+  buttons: {
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+  },
+  btnStyle: {
+    width: "40%",
+    backgroundColor: Colors.lightGrey,
+    marginTop: 36,
+    marginHorizontal: 12,
+  },
+  activeBtnStyle: {
+    backgroundColor: Colors.primary,
+  }
 });
 
 export default AddIssueModal;

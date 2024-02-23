@@ -7,13 +7,18 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "../constants/config";
+import { SwiperFlatList } from "react-native-swiper-flatlist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ListFilter from "../components/taskManager/ListFilter";
 import TeamCard from "../components/taskManager/TeamCard";
-import { authLogout } from "../store/actions/Authentication";
 import { useDispatch, useSelector } from "react-redux";
+import { authLogout } from "../store/actions/Authentication";
+
+import { Colors } from "../constants/config";
 import AddIssueModal from "../components/models/AddIssueModal";
+import TaskCard from "../components/taskManager/TaskCard";
+import { deleteTeam } from "../store/actions/Tasks";
+import AddTeamModal from "../components/models/AddTeamModal";
 
 const teams = [];
 const members = [];
@@ -24,130 +29,102 @@ const tasks = {
   priority: "LOW",
 };
 
-const ManageTasks = ({ navigation }) => {
+const ManageTasks = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const [taskTypeFilter, setTaskTypeFilter] = useState("TODO");
   const [showAddIssue, setShowAddIssue] = useState(false);
+  const [showAddTeam, setShowAddTeam] = useState(false);
   const user = useSelector((state) => state.user.user);
+  const data = route.params?.data;
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: "",
-      headerLeft: () => <Text style={styles.navHeader}>Board</Text>,
+      headerTitle: data.name || "",
       headerRight: () => (
         <View style={styles.logout}>
           <Ionicons
-            name="log-out-outline"
+            name="trash-outline"
             size={24}
             color="white"
-            onPress={logoutHandler}
+            onPress={deleteTeamHandler}
+          />
+          <Ionicons
+            name="eyedrop-outline"
+            size={24}
+            color="white"
+            onPress={openAddTeam}
           />
         </View>
       ),
     });
   }, []);
 
-  const logoutHandler = () => {
-    dispatch(authLogout());
-    navigation.navigate("Foresight");
-  };
+  const deleteTeamHandler = async () => {
+    const resp = await dispatch(deleteTeam(data.teamId))
+    resp && navigation.goBack();
+  }
 
   const openAddIssue = () => {
-    setShowAddIssue((prev) => setShowAddIssue(!prev));
-  }
+    setShowAddIssue(true);
+  };
   const closeAddIssue = () => {
-    setShowAddIssue((prev) => setShowAddIssue(!prev));
-  }
+    setShowAddIssue(false);
+  };
+
+  const openAddTeam = () => {
+    setShowAddTeam(true);
+  };
+  const closeAddTeam = () => {
+    setShowAddTeam(false);
+  };
 
   return (
     <View style={styles.mainContainer}>
-      <AddIssueModal
+      {/* <AddIssueModal
         showModal={showAddIssue}
         teams={teams}
         members={members}
         labels={labels}
         closeModal={closeAddIssue}
+      /> */}
+      <AddTeamModal
+        showModal={showAddTeam}
+        closeModal={closeAddTeam}
+        navigation={navigation}
       />
-      <View style={styles.mainHeader}>
-        <View style={styles.headersContent}>
-          <Text style={styles.headerName}>Your teams</Text>
-          {user.role === "ADMIN" &&
-            <TouchableOpacity>
-              <Text style={styles.headerName}>Add team</Text>
-            </TouchableOpacity>
-          }
+
+      {/* <SwiperFlatList
+        autoplay
+        autoplayDelay={2}
+        autoplayLoop
+        index={2}
+      > */}
+        <View style={styles.tasksContainer}>
+          {/* TODO Show members if this member is the team leader */}
+          <View style={styles.taskType}>
+            <Text style={styles.taskTypeHeader}>TODO</Text>
+            <Text>(2)</Text>
+          </View>
+          <ScrollView style={styles.scrollStyle}>
+            <TaskCard signature={data.signature}/>
+            <TaskCard signature={data.signature}/>
+
+            {/* TODO Show if this member is the team leader */}
+            {/* <TouchableOpacity
+                  style={styles.addIssue}
+                  onPress={openAddIssue}
+                >
+                  <Ionicons
+                    name="add"
+                    size={22}
+                    color={Colors.grey}
+                    style={{ marginTop: 2 }}
+                  />
+                  <Text style={styles.addIssueText}>Add issue</Text>
+                </TouchableOpacity> */}
+          </ScrollView>
         </View>
-        <TeamCard
-          teamLogo={require("../assets/mark.png")}
-          teamName="test1"
-          teamDescription="This is a test for team 1"
-        />
-      </View>
-
-      <View style={styles.titleView}>
-        <Text style={styles.headerName}>Your tasks</Text>
-        <ScrollView
-          style={{ flexDirection: "row" }}
-          horizontal={true}
-          showsHorizontalScrollIndicator={true}
-        >
-          <ListFilter
-            filterType="TODO"
-            taskTypeFilter={taskTypeFilter}
-            onChangeTaskTypeFilter={setTaskTypeFilter}
-          />
-          <ListFilter
-            filterType="INPROGRESS"
-            taskTypeFilter={taskTypeFilter}
-            onChangeTaskTypeFilter={setTaskTypeFilter}
-          />
-          <ListFilter
-            filterType="DONE"
-            taskTypeFilter={taskTypeFilter}
-            onChangeTaskTypeFilter={setTaskTypeFilter}
-          />
-        </ScrollView>
-      </View>
-      <View style={styles.tasksContainer}>
-        <Text style={styles.taskTypeHeader}>{taskTypeFilter}</Text>
-        <ScrollView style={styles.scrollStyle}>
-          <TouchableOpacity style={styles.taskContent}>
-            <View>
-              <Text>{tasks.title}</Text>
-              <Text>{tasks.priority}</Text>
-            </View>
-            <View style={styles.assigneeContainer}>
-              {/* <Text style={styles.assigneeText}>
-                {members.firstname[0]}{members.lastname[0]}
-              </Text> */}
-              <Text style={styles.assigneeText}>{"M"}{"H"}</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.taskContent}>
-            <View>
-              <Text>{tasks.title}</Text>
-              <Text>{tasks.priority}</Text>
-            </View>
-            <View style={styles.assigneeContainer}>
-              <Text style={styles.assigneeText}>{"M"}{"H"}</Text>
-            </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.addIssue}
-            onPress={openAddIssue}
-          >
-            <Ionicons
-              name="add"
-              size={22}
-              color={Colors.grey}
-              style={{ marginTop: 2 }}
-            />
-            <Text style={styles.addIssueText}>Add issue</Text>
-          </TouchableOpacity>
-        </ScrollView>
-
-      </View>
+      {/* </SwiperFlatList> */}
     </View>
   );
 };
@@ -159,20 +136,20 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   logout: {
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     alignItems: "center",
-    gap: 8,
+    gap: 12,
   },
   mainContainer: {
     width: "100%",
-    padding: 16,
+    padding: 12,
   },
   mainHeader: {
     marginBottom: 32,
   },
   headersContent: {
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   headerName: {
     fontSize: 18,
@@ -184,22 +161,34 @@ const styles = StyleSheet.create({
     marginTop: -8,
   },
   tasksContainer: {
-    width: "94%",
+    width: "100%",
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.white,
-    paddingVertical: 12,
     marginVertical: 16,
     borderRadius: 8,
   },
-  taskTypeHeader: {
+  taskType: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: Colors.white,
     marginBottom: 12,
+    paddingVertical: 12,
+    borderTopRightRadius: 12,
+    borderTopLeftRadius: 12,
+  },
+  taskTypeHeader: {
     fontSize: 16,
     fontWeight: "bold",
+    textAlign: "left",
+    marginHorizontal: 16,
   },
   scrollStyle: {
-    width: "94%",
+    width: "100%",
+    backgroundColor: Colors.white,
+    padding: 12,
+    borderRadius: 12,
   },
   taskContent: {
     flexDirection: "row",

@@ -4,14 +4,19 @@ import { baseUrl } from "../../constants/config";
 import { uiStartLoading, uiStopLoading } from "./Ui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+export const getCurToken = () => async (dispatch) => {
+  const token = await AsyncStorage.getItem("authToken");
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `${token}`
+  };
+  return headers;
+}
+
 export const getUsers = () => async (dispatch) => {
   try {
     dispatch(uiStartLoading());
-    const token = await AsyncStorage.getItem("authToken");
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `${token}`
-    };
+    const headers = await dispatch(getCurToken());
     const response = await axios.get(`${baseUrl}/users`, { headers });
     // console.log(response.data)
     dispatch(setUsers(response.data || []));
@@ -25,11 +30,7 @@ export const getUsers = () => async (dispatch) => {
 export const addNewUser = (userData) => async (dispatch) => {
   try {
     dispatch(uiStartLoading())
-    const token = await AsyncStorage.getItem("authToken");
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `${token}`
-    };
+    const headers = await dispatch(getCurToken());
     await axios({
       method: "POST",
       url: baseUrl + "/users",
@@ -50,11 +51,7 @@ export const addNewUser = (userData) => async (dispatch) => {
 export const editUserDetails = (id, newUserData) => async (dispatch) => {
   try {
     dispatch(uiStartLoading())
-    const token = await AsyncStorage.getItem("authToken");
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `${token}`
-    };
+    const headers = await dispatch(getCurToken());
     await axios({
       method: "PUT",
       url: `${baseUrl}/users/${id}`,
@@ -75,11 +72,7 @@ export const editUserDetails = (id, newUserData) => async (dispatch) => {
 export const deactivateUser = (id) => async (dispatch) => {
   try {
     dispatch(uiStartLoading())
-    const token = await AsyncStorage.getItem("authToken");
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `${token}`
-    };
+    const headers = await dispatch(getCurToken());
     await axios({
       method: "PUT",
       url: `${baseUrl}/users/${id}/deactivate`,
@@ -96,11 +89,7 @@ export const deactivateUser = (id) => async (dispatch) => {
 export const activateUser = (id) => async (dispatch) => {
   try {
     dispatch(uiStartLoading())
-    const token = await AsyncStorage.getItem("authToken");
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `${token}`
-    };
+    const headers = await dispatch(getCurToken());
     await axios({
       method: "PUT",
       url: `${baseUrl}/users/${id}/activate`,
@@ -117,12 +106,7 @@ export const activateUser = (id) => async (dispatch) => {
 export const changePassword = (id, newPassword) => async (dispatch) => {
   try {
     dispatch(uiStartLoading())
-    // console.log("ID = ", id);
-    const token = await AsyncStorage.getItem("authToken");
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `${token}`
-    };
+    const headers = await dispatch(getCurToken());
     await axios({
       method: "PUT",
       url: `${baseUrl}/users/changePassword/${id}`,
@@ -142,11 +126,7 @@ export const userSearch = (keyword) => async (dispatch) => {
     dispatch(uiStartLoading());
     // console.log(keyword)
     keyword = keyword ? keyword.toLowerCase() : '';
-    const token = await AsyncStorage.getItem("authToken");
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `${token}`
-    };
+    const headers = await dispatch(getCurToken());
     const response = await axios({
       method: "GET",
       url: `${baseUrl}/users/search?firstname=${keyword}&lastname=${keyword}&email=${keyword}`,

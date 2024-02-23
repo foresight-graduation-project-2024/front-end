@@ -1,12 +1,13 @@
 import React, { useLayoutEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from 'react-redux';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { authLogout } from "../../store/actions/Authentication";
 import { Colors } from "../../constants/config";
 import AddIssueModal from "../models/AddIssueModal";
+import TeamCard from "./TeamCard";
+import IssueCard from "./IssueCard";
 
 const teams = [];
 const members = [];
@@ -37,7 +38,7 @@ const Issues = ({navigation}) => {
               name="add"
               size={24}
               color="white"
-              onPress={addTeamHandler}
+              onPress={addIssueHandler}
             />
           )}
         </View>
@@ -50,7 +51,7 @@ const Issues = ({navigation}) => {
     navigation.navigate("Foresight");
   };
 
-  const addTeamHandler = () => {
+  const addIssueHandler = () => {
     setShowAddIssue(true);
   }
 
@@ -68,6 +69,16 @@ const Issues = ({navigation}) => {
         closeModal={closeAddIssue}
       />
       <Text style={styles.headerText}>All issues</Text>
+      <ScrollView>
+        <IssueCard
+          issueKey="T1-1"
+          issueSummary="Edit button text in the manager screen when do deactivate"
+        />
+        <IssueCard
+          issueKey="T2-1"
+          issueSummary="Edit button color"
+        />
+      </ScrollView>
     </View>
   );
 };

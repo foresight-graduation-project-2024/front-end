@@ -9,22 +9,14 @@ import { Colors } from "../../constants/config";
 function Button(props) {
   return (
     <TouchableOpacity
-      style={[styles.button, { 
-        backgroundColor: props.backgroundColor,
-        marginTop: props.marginTop || 0,
-        marginBottom: props.marginBottom || 0,
-        width: props.width || "100%",
-        height: props.height || 38,
-        borderRadius: props.borderRadius || 6,
-        paddingVertical: props.paddingVertical || 8,
-      }]}
+      style={[styles.button, props.btnStyle]}
       onPress={props.onPress}
       disabled={props.disabled}
     >
       <Text
         style={[
           styles.buttonText,
-          { color: props.color ? props.color : Colors.white },
+          { color: props.textColor ? props.textColor : Colors.white },
         ]}
       >
         {props.children}
@@ -43,6 +35,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
+
+    marginTop: 0,
+    marginBottom: 0,
+    width: "100%",
+    height: 38,
+    borderRadius: 6,
+    paddingVertical: 8,
   },
   pressed: {
     opacity: 0.7,

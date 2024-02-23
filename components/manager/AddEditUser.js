@@ -270,7 +270,7 @@ const AddEditUser = ({ navigation, route }) => {
         <View style={styles.btn}>
           <Button
             onPress={isEditing ? EditUserHandler : AddUserHandler}
-            backgroundColor={Colors.primary}
+            btnStyle={{ backgroundColor: Colors.primary }}
           >
             {isLoading ? <DotPulse /> : isEditing ? "Save" : "Add"}
           </Button>

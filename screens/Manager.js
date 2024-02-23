@@ -39,21 +39,11 @@ const Manager = ({ navigation }) => {
             color="white"
             onPress={logoutHandler}
           />
-          <TouchableOpacity onPress={refreshHandler}>
-            <Image
-              source={require("../assets/refresh.png")}
-              style={styles.refreshIcon}
-            />
-          </TouchableOpacity>
         </View>
       ),
     });
     dispatch(getUsers());
   }, []);
-
-  const refreshHandler = () => {
-    dispatch(getUsers());
-  };
 
   const logoutHandler = () => {
     dispatch(authLogout());

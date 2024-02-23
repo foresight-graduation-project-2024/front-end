@@ -10,6 +10,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from "moment";
+// import i18n from "i18n-js";
 
 import Input from "../components/custom/Input";
 import Button from "../components/custom/Button";
@@ -22,37 +24,33 @@ import {
 } from "../store/actions/Authentication";
 import DotPulse from "../components/custom/DotPulse";
 
-const ASYNC_STORAGE_KEYS = {
-  IS_REMEMBER: "isRemember",
-  AUTH_TOKEN: "authToken",
-  ROLE: "role",
-  ID: "userID",
-};
-
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState("mostafa@foresight.com");
-  const [password, setPassword] = useState("123456mM@");
+  const isLoading = useSelector((state) => state.ui.isLoading);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isRemember, setIsRemember] = useState(false);
   const [isSecure, setIsSecure] = useState(true);
   const [isLoginFailed, setIsLoginFailed] = useState(false);
   const [isAccountDeactivated, setIsAccountDeactivated] = useState(false);
-  const isLoading = useSelector((state) => state.ui.isLoading);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const isRememberMe = await AsyncStorage.getItem(
-          ASYNC_STORAGE_KEYS.IS_REMEMBER
-        );
-        const token = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.AUTH_TOKEN);
-        const role = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ROLE);
-        const id = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ID);
-        id && await dispatch(getUserInfo(id))
-        if (isRememberMe === "true" && token) {
-          if (role === "ADMIN")
-            navigation.replace("Manager");
+        const isRememberMe = await AsyncStorage.getItem("isRemember");
+        const token = await AsyncStorage.getItem("authToken");
+        const role = await AsyncStorage.getItem("role");
+        const id = await AsyncStorage.getItem("userID");
+        const tokenTime = await AsyncStorage.getItem("tokenTime");
+
+        const currentDay = moment().toISOString();
+        const tokenExpired = moment(currentDay).diff(tokenTime, "hours");
+
+        id && (await dispatch(getUserInfo(id)));
+        if (isRememberMe === "true" && token && tokenExpired < 1) {
+          if (role === "ADMIN") navigation.replace("Manager");
           else navigation.replace("Task");
         }
       } catch (err) {
@@ -97,6 +95,7 @@ const Login = ({ navigation }) => {
 
       <View style={styles.subContent}>
         <Text style={styles.welcomeTitle}>Welcome back!</Text>
+        {/* <Text style={styles.welcomeTitle}>{i18n.t("welcomeBack")}</Text> */}
         <Text style={styles.title}>Please enter your details</Text>
       </View>
 
@@ -143,9 +142,10 @@ const Login = ({ navigation }) => {
       <View style={styles.btnContainer}>
         <Button
           onPress={loginHandler}
-          backgroundColor={
-            email === "" || password === "" ? Colors.dammed : Colors.primary
-          }
+          btnStyle={{
+            backgroundColor:
+              email === "" || password === "" ? Colors.dammed : Colors.primary,
+          }}
           disabled={email === "" || password === ""}
         >
           {isLoading ? <DotPulse /> : "Log In"}

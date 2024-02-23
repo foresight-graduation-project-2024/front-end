@@ -1,28 +1,41 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import Dropdown from '../custom/Dropdown';
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import Modal from "react-native-modal";
+
+import { Colors } from "../../constants/config";
+import Input from "../custom/Input";
+import Button from "../custom/Button";
+import DotPulse from "../custom/DotPulse";
+import { addTeam } from "../../store/actions/Tasks";
 
 const AddTeamModal = (props) => {
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.ui.isLoading);
+
   const [teamName, setTeamName] = useState("");
+  const [teamDesc, setTeamDesc] = useState("");
   const [synonym, setSynonym] = useState("");
-  const initialDropdownState = {
-    teamLeader: { isVisible: false, selected: props.members[0] || "" },
-    members: { isVisible: false, selected: props.members[0] || "" },
-  };
-  const [dropdowns, setDropdowns] = useState(initialDropdownState);
 
-  const toggleDropdown = (name) => {
-    setDropdowns((prevState) => ({
-      ...initialDropdownState,
-      [name]: { ...prevState[name], isVisible: !prevState[name].isVisible },
-    }));
+  const addTeamHandler = async () => {
+    try {
+      const teamData = {
+        name: teamName,
+        description: teamDesc,
+        signature: synonym,
+      };
+      const resp = await dispatch(addTeam(teamData));
+      clearInputs();
+      resp && props.navigation.goBack();
+    } catch (err) {
+      console.log("addTeamHandler ERROR ==>", err);
+    }
   };
 
-  const selectItem = (name, item) => {
-    setDropdowns((prevState) => ({
-      ...prevState,
-      [name]: { ...prevState[name], isVisible: false, selected: item },
-    }));
+  const clearInputs = () => {
+    setTeamName("");
+    setTeamDesc("");
+    setSynonym("");
   };
 
   return (
@@ -45,7 +58,15 @@ const AddTeamModal = (props) => {
           </View>
           <View style={styles.inputWidth}>
             <Input
-              label="Synonym"
+              label="Team Description"
+              value={teamDesc}
+              onUpdateValue={(text) => setTeamDesc(text)}
+              borderColor={Colors.lightGrey}
+            />
+          </View>
+          <View style={styles.inputWidth}>
+            <Input
+              label="Team Key"
               value={synonym}
               onUpdateValue={(text) => setSynonym(text)}
               borderColor={Colors.lightGrey}
@@ -54,20 +75,26 @@ const AddTeamModal = (props) => {
             />
           </View>
 
-          <Dropdown
-            isVisible={dropdowns.teamLeader.isVisible}
-            toggleHandler={() => toggleDropdown("teamLeader")}
-            items={props.members}
-            selectItemHandler={(item) => selectItem("teamLeader", item)}
-            label="Team leader"
-            selectedItem={dropdowns.teamLeader.selected}
-            labelMarginRight={-36}
-          />
+          <View style={styles.buttons}>
+            <Button
+              onPress={addTeamHandler}
+              btnStyle={[styles.btnStyle, styles.activeBtnStyle]}
+            >
+              {isLoading ? <DotPulse /> : "Add"}
+            </Button>
+            <Button
+              onPress={props.closeModal}
+              btnStyle={styles.btnStyle}
+              textColor={Colors.lightBlack}
+            >
+              {"Cancel"}
+            </Button>
+          </View>
         </View>
       </View>
     </Modal>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   modal: {
@@ -90,9 +117,22 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 16,
   },
-  inputWidth: { 
-    width: "90%" 
+  inputWidth: {
+    width: "90%",
   },
-})
+  buttons: {
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+  },
+  btnStyle: {
+    width: "40%",
+    backgroundColor: Colors.lightGrey,
+    marginTop: 36,
+    marginHorizontal: 12,
+  },
+  activeBtnStyle: {
+    backgroundColor: Colors.primary,
+  },
+});
 
-export default AddTeamModal
+export default AddTeamModal;

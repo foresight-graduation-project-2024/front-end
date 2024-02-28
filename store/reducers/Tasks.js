@@ -1,7 +1,8 @@
-import { GET_TEAMS } from "../actions/actionTypes";
+import { GET_TEAMS, GET_TASKS } from "../actions/actionTypes";
 
 const initialState = {
   teams: [],
+  allTasks: [],
 }
 
 const taskReducer = (state = initialState, action) => {
@@ -10,6 +11,11 @@ const taskReducer = (state = initialState, action) => {
       return {
         ...state,
         teams: action.payload,
+      };
+    case GET_TASKS:
+      return {
+        ...state,
+        allTasks: action.payload,
       };
     default:
       return state;

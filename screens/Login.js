@@ -18,6 +18,7 @@ import Button from "../components/custom/Button";
 import { Colors } from "../constants/config";
 import {
   accountDeactivatedThunk,
+  authLogout,
   getUserInfo,
   signInFailedThunk,
   verifyLogIn,
@@ -29,8 +30,8 @@ const Login = ({ navigation }) => {
 
   const isLoading = useSelector((state) => state.ui.isLoading);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("mostafa@foresight.com");
+  const [password, setPassword] = useState("123456mM@");
   const [isRemember, setIsRemember] = useState(false);
   const [isSecure, setIsSecure] = useState(true);
   const [isLoginFailed, setIsLoginFailed] = useState(false);
@@ -46,9 +47,10 @@ const Login = ({ navigation }) => {
         const tokenTime = await AsyncStorage.getItem("tokenTime");
 
         const currentDay = moment().toISOString();
-        const tokenExpired = moment(currentDay).diff(tokenTime, "hours");
+        const tokenExpired = moment(currentDay).diff(tokenTime, "days");
 
-        id && (await dispatch(getUserInfo(id)));
+        if (tokenExpired > 1) dispatch(authLogout());
+        if (token && id) await dispatch(getUserInfo(id));
         if (isRememberMe === "true" && token && tokenExpired < 1) {
           if (role === "ADMIN") navigation.replace("Manager");
           else navigation.replace("Task");

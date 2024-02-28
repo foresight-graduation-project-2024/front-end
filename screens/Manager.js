@@ -25,7 +25,10 @@ const Manager = ({ navigation }) => {
   const dispatch = useDispatch();
   let users = useSelector((state) => state.user.users);
   const isLoading = useSelector((state) => state.ui.isLoading);
+
   const [taskTypeFilter, setTaskTypeFilter] = useState("ALL");
+
+  users = users?.filter((user) => user.role !== "ADMIN");
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -118,9 +121,8 @@ const Manager = ({ navigation }) => {
         <Indicator />
       ) : (
         <ScrollView>
-          {users.length > 1 ? (
+          {users.length > 0 ? (
             users
-              ?.filter((user) => user.role !== "ADMIN")
               ?.map((user) => (
                 <TouchableOpacity
                   key={user.id}

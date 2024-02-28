@@ -1,27 +1,19 @@
 import React, { useLayoutEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 
 import { authLogout } from "../../store/actions/Authentication";
 import { Colors } from "../../constants/config";
-import AddIssueModal from "../models/AddIssueModal";
-import TeamCard from "./TeamCard";
 import IssueCard from "./IssueCard";
+import { getAllTasks } from "../../store/actions/Tasks";
+import Indicator from "./../custom/Indicator";
 
-const teams = [];
-const members = [];
-const labels = [];
-const tasks = {
-  title: "task1",
-  status: "TODO",
-  priority: "LOW",
-};
-
-const Issues = ({navigation}) => {
+const Issues = ({ navigation }) => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.user);
-  const [showAddIssue, setShowAddIssue] = useState(false);
+  const allTasks = useSelector((state) => state.tasks.allTasks);
+  const isLoading = useSelector((state) => state.ui.isLoading);
+  // const user = useSelector((state) => state.user.user);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -33,17 +25,10 @@ const Issues = ({navigation}) => {
             color="white"
             onPress={logoutHandler}
           />
-          {user.role === "TECHNICAL_MANAGER" && (
-            <Ionicons
-              name="add"
-              size={24}
-              color="white"
-              onPress={addIssueHandler}
-            />
-          )}
         </View>
       ),
     });
+    dispatch(getAllTasks());
   }, []);
 
   const logoutHandler = () => {
@@ -51,34 +36,26 @@ const Issues = ({navigation}) => {
     navigation.navigate("Foresight");
   };
 
-  const addIssueHandler = () => {
-    setShowAddIssue(true);
-  }
-
-  const closeAddIssue = () => {
-    setShowAddIssue(false);
-  }
-
   return (
     <View style={styles.container}>
-      <AddIssueModal
-        showModal={showAddIssue}
-        teams={teams}
-        members={members}
-        labels={labels}
-        closeModal={closeAddIssue}
-      />
       <Text style={styles.headerText}>All issues</Text>
-      <ScrollView>
-        <IssueCard
-          issueKey="T1-1"
-          issueSummary="Edit button text in the manager screen when do deactivate"
-        />
-        <IssueCard
-          issueKey="T2-1"
-          issueSummary="Edit button color"
-        />
-      </ScrollView>
+      {isLoading ? (
+        <Indicator />
+      ) : (
+        <ScrollView>
+          {allTasks.length > 0 ? (
+            allTasks.map((data, index) => (
+              <IssueCard
+                issueKey={data.title}
+                summary="Test"
+                onPress={() => {}}
+              />
+            ))
+          ) : (
+            <Text style={styles.noTask}>No tasks exist!</Text>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -99,8 +76,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "500",
     marginBottom: 4,
-  }
+  },
+  noTask: {
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 48,
+  },
 });
 
 export default Issues;
-

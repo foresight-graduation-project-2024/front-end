@@ -11,3 +11,4 @@ export const UI_STOP_LOADING = "UI_STOP_LOADING";
 export const SET_LANGUAGE = "SET_LANGUAGE";
 
 export const GET_TEAMS = "GET_TEAMS";
+export const GET_TASKS = "GET_TASKS";

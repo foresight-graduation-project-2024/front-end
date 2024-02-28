@@ -3,30 +3,26 @@ import {
   View,
   StyleSheet,
 } from "react-native";
+import { useSelector } from 'react-redux';
 import Modal from "react-native-modal";
-import { Colors } from "../../constants/config";
+
+import { Colors, PRIORITY, STATUS } from "../../constants/config";
 import Input from "../custom/Input";
 import Dropdown from "../custom/Dropdown";
 import DotPulse from "../custom/DotPulse";
 import Button from "../custom/Button";
-import { useSelector } from 'react-redux';
 
-// TODO: for edit also
-const AddIssueModal = (props) => {
+const AddEditIssueModal = (props) => {
   const isLoading = useSelector(state => state.ui.isLoading);
+
+  const initialDropdownState = {
+    status: { isVisible: false, selected: STATUS[0] || "" },
+    priority: { isVisible: false, selected: PRIORITY[0] || "" },
+  };
 
   const [dropdowns, setDropdowns] = useState(initialDropdownState);
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
-
-  const initialDropdownState = {
-    team: { isVisible: false, selected: props.teams[0] || "" },
-    status: { isVisible: false, selected: props.teams[0] || "" },
-    assignee: { isVisible: false, selected: props.members[0] || "" },
-    label: { isVisible: false, selected: props.labels[0] || "" },
-  };
-
-  const STATUS = ["TODO", "DONE", "INPROGRESS"];
 
   const toggleDropdown = (name) => {
     setDropdowns((prevState) => ({
@@ -71,18 +67,7 @@ const AddIssueModal = (props) => {
             />
           </View>
 
-          {/* <Dropdown
-            isVisible={dropdowns.team.isVisible}
-            toggleHandler={() => toggleDropdown("team")}
-            items={props.teams}
-            selectItemHandler={(item) => selectItem("team", item)}
-            label="Team"
-            selectedItem={dropdowns.team?.selected}
-            labelMarginRight={-36}
-          /> */}
-
-          {/* TODO STATUS WAITING -> ALWAYS */}
-          {/* <Dropdown
+          <Dropdown
             isVisible={dropdowns.status.isVisible}
             toggleHandler={() => toggleDropdown("status")}
             items={STATUS}
@@ -90,29 +75,19 @@ const AddIssueModal = (props) => {
             label="Status"
             selectedItem={dropdowns.status.selected}
             labelMarginRight={-42}
-          /> */}
+          />
 
-          {/* <Dropdown
-            isVisible={dropdowns.assignee.isVisible}
-            toggleHandler={() => toggleDropdown("assignee")}
-            items={props.members}
-            selectItemHandler={(item) => selectItem("assignee", item)}
-            label="Assignee"
-            selectedItem={dropdowns.assignee.selected}
-            labelMarginRight={-58}
-          /> */}
+          <Dropdown
+            isVisible={dropdowns.priority.isVisible}
+            toggleHandler={() => toggleDropdown("priority")}
+            items={PRIORITY}
+            selectItemHandler={(item) => selectItem("priority", item)}
+            label="Priority"
+            selectedItem={dropdowns.priority.selected}
+            labelMarginRight={-46}
+          />
 
-          {/* <Dropdown
-            isVisible={dropdowns.label.isVisible}
-            toggleHandler={() => toggleDropdown("label")}
-            items={props.labels}
-            selectItemHandler={(item) => selectItem("label", item)}
-            label="Label"
-            selectedItem={dropdowns.label.selected}
-            labelMarginRight={-38}
-          /> */}
-
-          {/* TODO: Add start date, DeadLine */}
+          {/* TODO: Add startDate => could start after week, DeadLine (endData) */}
 
           <View style={styles.buttons}>
             <Button
@@ -122,7 +97,7 @@ const AddIssueModal = (props) => {
               {isLoading ? <DotPulse /> : "Add"}
             </Button>
             <Button
-              onPress={() => {}}
+              onPress={props.closeModal}
               btnStyle={styles.btnStyle}
               textColor={Colors.lightBlack}            
             >
@@ -175,4 +150,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default AddIssueModal;
+export default AddEditIssueModal;

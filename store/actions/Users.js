@@ -132,6 +132,7 @@ export const userSearch = (keyword) => async (dispatch) => {
       url: `${baseUrl}/users/search?firstname=${keyword}&lastname=${keyword}&email=${keyword}`,
       headers
     });
+    // console.log("Search:", response.data.content)
     dispatch(setUsers(response.data.content || []));
   } catch (error) {
     console.log("userSearch ERROR ==>", error);

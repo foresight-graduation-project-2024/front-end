@@ -91,7 +91,7 @@ const AddEditUser = ({ navigation, route }) => {
     return isValid;
   };
 
-  changeUserDetailsHandler = useCallback((name, value) => {
+  const changeUserDetailsHandler = useCallback((name, value) => {
     if (isEmailExist) dispatch(emailExist(false));
     setUserDetails((prevDetails) => ({
       ...prevDetails,

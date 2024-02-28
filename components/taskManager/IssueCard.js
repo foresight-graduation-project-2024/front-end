@@ -3,12 +3,12 @@ import { StyleSheet, Text, Image, TouchableOpacity } from "react-native";
 
 const IssueCard = (props) => {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={props.onPress}>
       <Text style={styles.issueNum}>{props.issueKey}</Text>
       <Text>
-        {props.issueSummary.length > 30
-          ? props.issueSummary.substring(0, 30) + " ..."
-          : props.issueSummary}
+        {props.summary.length > 30
+          ? props.summary.substring(0, 30) + " ..."
+          : props.summary}
       </Text>
       <Image
         source={require("../../assets/chevron_left.png")}

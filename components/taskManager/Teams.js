@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { authLogout } from "../../store/actions/Authentication";
 import { Colors } from "../../constants/config";
 import TeamCard from "./TeamCard";
-import AddTeamModal from "./../models/AddTeamModal";
+import AddEditTeamModal from "./../models/AddEditTeamModal";
 import { getAllTeams, getTeamDetails } from "../../store/actions/Tasks";
 import { getUsers } from "../../store/actions/Users";
 
@@ -61,7 +61,7 @@ const Teams = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <AddTeamModal
+      <AddEditTeamModal
         showModal={showAddIssue}
         closeModal={closeAddIssue}
         navigation={navigation}

@@ -10,6 +10,7 @@ export const getAllTeams = () => async (dispatch) => {
     dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
     const response = await axios.get(`${baseUrl}/team`, { headers });
+    // console.log("Get all teams ==>", response.data.content)
     dispatch(setTeams(response.data.content || []));
   } catch (error) {
     console.log("getUsers ERROR ==>", error.response.data.code);
@@ -66,6 +67,7 @@ export const editTeamDetails = (newTeamData) => async (dispatch) => {
     return true;
   } catch (err) {
     console.log("editUserDetails ERROR ==>", err.response.data.code);
+    console.log("editUserDetails ERROR ==>", err);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -90,8 +92,8 @@ export const getAllTasks = () => async (dispatch) => {
     dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
     const response = await axios.get(`${baseUrl}/task`, { headers });
-    console.log("Get all tasks ==> ", response.data);
-    // dispatch(setTasks(response.data.content || []));
+    // console.log("Get all tasks ==> ", response.data.content);
+    dispatch(setTasks(response.data.content || []));
   } catch (error) {
     console.log("getUsers ERROR ==>", error.response.data.code);
   } finally {
@@ -185,5 +187,10 @@ export const deleteTask = (teamId, taskId) => async (dispatch) => {
 
 export const setTeams = (payload) => ({
   type: actions.GET_TEAMS,
+  payload,
+});
+
+export const setTasks = (payload) => ({
+  type: actions.GET_TASKS,
   payload,
 });

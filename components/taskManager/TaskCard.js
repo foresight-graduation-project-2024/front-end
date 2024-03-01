@@ -2,25 +2,12 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Colors } from "../../constants/config";
 
-const labels = [];
-const tasks = {
-  summary: "task1",
-  status: "TODO",
-  label: "LOW",
-  taskNum: "T1-1",
-};
-
 const TaskCard = (props) => {
   return (
-    <TouchableOpacity style={styles.taskContent}>
-      {/* 
-        task summary
-        label if exist
-        task num + first char form first and last name
-      */}
+    <TouchableOpacity style={styles.taskContent} onPress={props.onPress}>
       <View>
-        <Text style={styles.taskSummary}>{tasks.summary}</Text>
-        {tasks?.label && <Text style={styles.taskLabel}>{tasks.label}</Text>}
+        <Text style={styles.taskSummary}>{props.summary}</Text>
+        <Text style={styles.taskLabel}>{props.priority}</Text>
       </View>
       <View style={styles.taskFooter}>
         {/* <Text style={styles.assigneeText}>

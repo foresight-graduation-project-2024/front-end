@@ -8,7 +8,6 @@ import { Colors } from "../../constants/config";
 import TeamCard from "./TeamCard";
 import AddEditTeamModal from "./../models/AddEditTeamModal";
 import { getAllTeams, getTeamDetails } from "../../store/actions/Tasks";
-import { getUsers } from "../../store/actions/Users";
 
 const Teams = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -38,7 +37,6 @@ const Teams = ({ navigation }) => {
       ),
     });
     dispatch(getAllTeams());
-    dispatch(getUsers());
   }, []);
 
   const logoutHandler = () => {
@@ -55,8 +53,8 @@ const Teams = ({ navigation }) => {
   };
 
   const teamTasksHandler = async (data) => {
-    const resp = await dispatch(getTeamDetails(data.teamId));
-    resp && navigation.navigate("Board", { data });
+    const teamData = await dispatch(getTeamDetails(data.teamId));
+    teamData && navigation.navigate("Board", { teamData });
   };
 
   return (

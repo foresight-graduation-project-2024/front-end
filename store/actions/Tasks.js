@@ -9,7 +9,7 @@ export const getAllTeams = () => async (dispatch) => {
   try {
     dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
-    const response = await axios.get(`${baseUrl}/team`, { headers });
+    const response = await axios.get(`${baseUrl}/team/summaries`, { headers });
     // console.log("Get all teams ==>", response.data.content)
     dispatch(setTeams(response.data.content || []));
   } catch (error) {
@@ -101,20 +101,6 @@ export const getAllTasks = () => async (dispatch) => {
   }
 }
 
-export const getTeamTasks = (teamId) => async (dispatch) => {
-  try {
-    dispatch(uiStartLoading());
-    const headers = await dispatch(getCurToken());
-    const response = await axios.get(`${baseUrl}/task/${teamId}`, { headers });
-    console.log("Get team tasks ==> ", response.data);
-    // dispatch(setTasks(response.data.content || []));
-  } catch (error) {
-    console.log("getUsers ERROR ==>", error.response.data.code);
-  } finally {
-    dispatch(uiStopLoading());
-  }
-}
-
 export const addTask = (teamId, taskData) => async (dispatch) => {
   try {
     dispatch(uiStartLoading())
@@ -125,29 +111,24 @@ export const addTask = (teamId, taskData) => async (dispatch) => {
       data: taskData,
       headers
     });
-    dispatch(getAllTasks());
     return true;
   } catch (err) {
     console.log("addNewUser ERROR ==>", err.response.data.code);
+    // console.log("addNewUser ERROR ==>", err);
   } finally {
     dispatch(uiStopLoading());
   }
 }
 
-export const addComment = (taskId, commentDetails) => async (dispatch) => {
+export const getTaskDetails = (taskId) => async (dispatch) => {
   try {
-    dispatch(uiStartLoading())
+    dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
-    await axios({
-      method: "POST",
-      url: baseUrl + `/task/${taskId}/comment`,
-      data: commentDetails,
-      headers
-    });
-    dispatch(getAllTasks());
-    return true;
-  } catch (err) {
-    console.log("addNewUser ERROR ==>", err.response.data.code);
+    const response = await axios.get(`${baseUrl}/task/${taskId}`, { headers });
+    // console.log("getTaskDetails response ==>", response.data);
+    return response.data;
+  } catch (error) {
+    console.log("getTaskDetails ERROR ==>", error.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -176,10 +157,32 @@ export const deleteTask = (teamId, taskId) => async (dispatch) => {
   try {
     dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
+    console.log(teamId, taskId)
     await axios.delete(`${baseUrl}/task/${teamId}/${taskId}`, { headers });
     dispatch(getAllTasks());
+    return true;
   } catch (error) {
     console.log("deleteTask ERROR ==>", error.response.data.code);
+    console.log("deleteTask ERROR ==>", error);
+  } finally {
+    dispatch(uiStopLoading());
+  }
+}
+
+export const addComment = (taskId, commentDetails) => async (dispatch) => {
+  try {
+    dispatch(uiStartLoading())
+    const headers = await dispatch(getCurToken());
+    await axios({
+      method: "POST",
+      url: baseUrl + `/task/${taskId}/comment`,
+      data: commentDetails,
+      headers
+    });
+    dispatch(getAllTasks());
+    return true;
+  } catch (err) {
+    console.log("addNewUser ERROR ==>", err.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }

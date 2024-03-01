@@ -2,18 +2,25 @@ import React, { useState } from "react";
 import {
   View,
   StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
 } from "react-native";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-native-modal";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { Colors, PRIORITY, STATUS } from "../../constants/config";
 import Input from "../custom/Input";
 import Dropdown from "../custom/Dropdown";
 import DotPulse from "../custom/DotPulse";
 import Button from "../custom/Button";
+import { addTask } from "../../store/actions/Tasks";
 
 const AddEditIssueModal = (props) => {
-  const isLoading = useSelector(state => state.ui.isLoading);
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.ui.isLoading);
 
   const initialDropdownState = {
     status: { isVisible: false, selected: STATUS[0] || "" },
@@ -23,6 +30,49 @@ const AddEditIssueModal = (props) => {
   const [dropdowns, setDropdowns] = useState(initialDropdownState);
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isEndDateVisible, setIsEndDateVisibility] = useState(false);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+
+  const startDateFormat = startTime
+    ? `${String(startTime.getDate()).padStart(2, "0")}-${String(
+        startTime.getMonth() + 1
+      ).padStart(2, "0")}-${startTime.getFullYear()}, ${String(
+        startTime.getHours()
+      ).padStart(2, "0")}:${String(startTime.getMinutes()).padStart(2, "0")}`
+    : "YYYY-MMM-DD, HH-MM";
+
+  const endDateFormat = endTime
+    ? `${String(endTime.getDate()).padStart(2, "0")}-${String(
+        endTime.getMonth() + 1
+      ).padStart(2, "0")}-${endTime.getFullYear()}, ${String(
+        endTime.getHours()
+      ).padStart(2, "0")}:${String(endTime.getMinutes()).padStart(2, "0")}`
+    : "YYYY-MMM-DD, HH-MM";
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+  const showEndDatePicker = () => {
+    setIsEndDateVisibility(true);
+  };
+  const hideEndDatePicker = () => {
+    setIsEndDateVisibility(false);
+  };
+
+  const startTimeConfirm = (date) => {
+    setStartTime(date);
+    hideDatePicker();
+  };
+
+  const endTimeConfirm = (date) => {
+    setEndTime(date);
+    hideEndDatePicker();
+  };
 
   const toggleDropdown = (name) => {
     setDropdowns((prevState) => ({
@@ -38,6 +88,31 @@ const AddEditIssueModal = (props) => {
     }));
   };
 
+  const addTaskHandler = async () => {
+    const taskData = {
+      title: props.signature,
+      summary,
+      description,
+      status: dropdowns.status.selected,
+      priority: dropdowns.priority.selected,
+      startDate: startTime.toISOString(),
+      endDate: endTime.toISOString(),
+    };
+    // console.log(props.teamId);
+    // console.log(taskData);
+    const resp = await dispatch(addTask(props.teamId, taskData));
+    console.log("resp ==>", resp);
+    resp && props.navigation.goBack();
+    clearInputs();
+  };
+
+  const clearInputs = () => {
+    setSummary("");
+    setDescription("");
+    setStartTime(null);
+    setEndTime(null);
+  };
+
   return (
     <Modal
       animationType="slide"
@@ -47,65 +122,102 @@ const AddEditIssueModal = (props) => {
       onBackdropPress={props.closeModal}
     >
       <View style={styles.modalView}>
-        <View style={styles.modalContent}>
-          <View style={styles.inputWidth}>
-            <Input
-              label="Summary"
-              value={summary}
-              onUpdateValue={(text) => setSummary(text)}
-              borderColor={Colors.lightGrey}
+        <ScrollView style={styles.scrolling}>
+          <View style={styles.modalContent}>
+            <View style={styles.inputWidth}>
+              <Input
+                label="Summary"
+                value={summary}
+                onUpdateValue={(text) => setSummary(text)}
+                borderColor={Colors.lightGrey}
+              />
+            </View>
+            <View style={styles.inputWidth}>
+              <Input
+                label="Description"
+                value={description}
+                onUpdateValue={(text) => setDescription(text)}
+                borderColor={Colors.lightGrey}
+                multiline={true}
+                maxLength={999}
+              />
+            </View>
+
+            <Dropdown
+              isVisible={dropdowns.status.isVisible}
+              toggleHandler={() => toggleDropdown("status")}
+              items={STATUS}
+              selectItemHandler={(item) => selectItem("status", item)}
+              label="Status"
+              selectedItem={dropdowns.status.selected}
+              labelMarginRight={-42}
             />
-          </View>
-          <View style={styles.inputWidth}>
-            <Input
-              label="Description"
-              value={description}
-              onUpdateValue={(text) => setDescription(text)}
-              borderColor={Colors.lightGrey}
-              multiline={true}
-              maxLength={999}
+
+            <Dropdown
+              isVisible={dropdowns.priority.isVisible}
+              toggleHandler={() => toggleDropdown("priority")}
+              items={PRIORITY}
+              selectItemHandler={(item) => selectItem("priority", item)}
+              label="Priority"
+              selectedItem={dropdowns.priority.selected}
+              labelMarginRight={-46}
             />
-          </View>
 
-          <Dropdown
-            isVisible={dropdowns.status.isVisible}
-            toggleHandler={() => toggleDropdown("status")}
-            items={STATUS}
-            selectItemHandler={(item) => selectItem("status", item)}
-            label="Status"
-            selectedItem={dropdowns.status.selected}
-            labelMarginRight={-42}
-          />
+            <View style={styles.inputWidth}>
+              <Text style={styles.label}>Start time</Text>
+              <View style={styles.dateField}>
+                <Text>{startDateFormat}</Text>
+                <TouchableOpacity onPress={showDatePicker}>
+                  <Image
+                    source={require("../../assets/calendar.png")}
+                    style={styles.calendarImg}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="datetime"
+              onConfirm={startTimeConfirm}
+              onCancel={hideDatePicker}
+            />
 
-          <Dropdown
-            isVisible={dropdowns.priority.isVisible}
-            toggleHandler={() => toggleDropdown("priority")}
-            items={PRIORITY}
-            selectItemHandler={(item) => selectItem("priority", item)}
-            label="Priority"
-            selectedItem={dropdowns.priority.selected}
-            labelMarginRight={-46}
-          />
+            <View style={styles.inputWidth}>
+              <Text style={styles.label}>End time</Text>
+              <View style={styles.dateField}>
+                <Text>{endDateFormat}</Text>
+                <TouchableOpacity onPress={showEndDatePicker}>
+                  <Image
+                    source={require("../../assets/calendar.png")}
+                    style={styles.calendarImg}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <DateTimePickerModal
+              isVisible={isEndDateVisible}
+              mode="datetime"
+              onConfirm={endTimeConfirm}
+              onCancel={hideEndDatePicker}
+            />
 
-          {/* TODO: Add startDate => could start after week, DeadLine (endData) */}
-
-          <View style={styles.buttons}>
-            <Button
-              onPress={() => {}}
-              btnStyle={[styles.btnStyle, styles.activeBtnStyle]}
+            <View style={styles.buttons}>
+              <Button
+                onPress={addTaskHandler}
+                btnStyle={[styles.btnStyle, styles.activeBtnStyle]}
               >
-              {isLoading ? <DotPulse /> : "Add"}
-            </Button>
-            <Button
-              onPress={props.closeModal}
-              btnStyle={styles.btnStyle}
-              textColor={Colors.lightBlack}            
-            >
-              {"Cancel"}
-            </Button>
+                {isLoading ? <DotPulse /> : "Add"}
+              </Button>
+              <Button
+                onPress={props.closeModal}
+                btnStyle={styles.btnStyle}
+                textColor={Colors.lightBlack}
+              >
+                {"Cancel"}
+              </Button>
+            </View>
           </View>
-
-        </View>
+        </ScrollView>
       </View>
     </Modal>
   );
@@ -124,6 +236,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  scrolling: {
+    width: "100%",
+  },
   modalContent: {
     width: "100%",
     justifyContent: "center",
@@ -132,8 +247,26 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 16,
   },
-  inputWidth: { 
-    width: "90%" 
+  inputWidth: {
+    width: "90%",
+  },
+  label: {
+    marginTop: 12,
+    marginBottom: 4,
+  },
+  dateField: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: Colors.lightGrey,
+    borderRadius: 8,
+  },
+  calendarImg: {
+    width: 32,
+    height: 32,
   },
   buttons: {
     flexDirection: "row-reverse",
@@ -147,7 +280,7 @@ const styles = StyleSheet.create({
   },
   activeBtnStyle: {
     backgroundColor: Colors.primary,
-  }
+  },
 });
 
 export default AddEditIssueModal;

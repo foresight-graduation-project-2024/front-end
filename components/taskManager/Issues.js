@@ -6,14 +6,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { authLogout } from "../../store/actions/Authentication";
 import { Colors } from "../../constants/config";
 import IssueCard from "./IssueCard";
-import { getAllTasks } from "../../store/actions/Tasks";
+import { getAllTasks, getTaskDetails } from "../../store/actions/Tasks";
 import Indicator from "./../custom/Indicator";
+import TaskDetailsModal from "../models/TaskDetailsModal";
 
 const Issues = ({ navigation }) => {
   const dispatch = useDispatch();
   const allTasks = useSelector((state) => state.tasks.allTasks);
   const isLoading = useSelector((state) => state.ui.isLoading);
-  // const user = useSelector((state) => state.user.user);
+
+  const [showTaskDetails, setShowTaskDetails] = useState(false);
+  const [taskDetails, setTaskDetails] = useState();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -36,8 +39,26 @@ const Issues = ({ navigation }) => {
     navigation.navigate("Foresight");
   };
 
+  const showTaskDetailsHandler = async (data) => {
+    const taskData = await dispatch(getTaskDetails(data.taskId));
+    if (taskData) {
+      setTaskDetails(taskData);
+      setShowTaskDetails(true);
+    }
+  }
+
+  const closeTaskDetailsHandler = () => {
+    setShowTaskDetails(false);
+  }
+
   return (
     <View style={styles.container}>
+      <TaskDetailsModal 
+        showModal={showTaskDetails}
+        closeModal={closeTaskDetailsHandler}
+        taskDetails={taskDetails}
+      />
+
       <Text style={styles.headerText}>All issues</Text>
       {isLoading ? (
         <Indicator />
@@ -46,9 +67,10 @@ const Issues = ({ navigation }) => {
           {allTasks.length > 0 ? (
             allTasks.map((data, index) => (
               <IssueCard
+                key={index}
                 issueKey={data.title}
-                summary="Test"
-                onPress={() => {}}
+                summary={data.summary}
+                onPress={() => { showTaskDetailsHandler(data) }}
               />
             ))
           ) : (

@@ -8,8 +8,8 @@ const TeamCard = (props) => {
       <View style={styles.teamDetails}>
         <Text style={styles.teamName}>{props.teamName}</Text>
         <Text>
-          {props.teamDesc.length > 25
-            ? props.teamDesc.substring(0, 25) + " ..."
+          {props.teamDesc.length > 30
+            ? props.teamDesc.substring(0, 30) + " ..."
             : props.teamDesc}
         </Text>
       </View>

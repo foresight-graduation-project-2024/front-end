@@ -30,12 +30,10 @@ export const verifyLogIn = (authData, isRememberMe) => async (dispatch) => {
     const response = await axios.post(`${baseUrl}/login`, authData);
     const token = response.data.token;
     const id = response.data.id;
-    const currentTime = moment().toISOString();
 
     AsyncStorage.setItem("authToken", token);
     AsyncStorage.setItem("userID", id.toString());
     AsyncStorage.setItem("isRemember", isRememberMe.toString());
-    AsyncStorage.setItem("tokenTime", currentTime);
 
     await dispatch(getUserInfo(id));
     return response.data;
@@ -74,7 +72,6 @@ export const authLogout = () => async () => {
   AsyncStorage.removeItem("role");
   AsyncStorage.removeItem("userID");
   AsyncStorage.removeItem("isRemember");
-  AsyncStorage.removeItem("tokenTime");
 };
 
 const signInFailed = (payload) => {

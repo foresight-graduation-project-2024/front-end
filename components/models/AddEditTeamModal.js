@@ -1,5 +1,5 @@
-import React, { useCallback, useRef, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useCallback, useState } from "react";
+import { StyleSheet, View, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-native-modal";
 import {
@@ -18,24 +18,31 @@ const AddEditTeamModal = (props) => {
 
   const isLoading = useSelector((state) => state.ui.isLoading);
   const users = useSelector((state) => state.user.users);
-  const selectUsers = users
-    .filter(
-      (user) => user.role !== "ADMIN" && user.role !== "TECHNICAL_MANAGER"
-    )
-    .map((item) => ({
-      key: item.id,
-      value: `${item.firstname} ${item.lastname}`,
-    }));
 
   const isEditing = props.isEditing;
 
   const [selectedMembers, setSelectedMembers] = useState([]);
-  const [selectedTeamLeader, setSelectedTeamLeader] = useState();
+  const [selectedTeamLeader, setSelectedTeamLeader] = useState("");
   const [teamDetails, setTeamDetails] = useState({
     teamName: isEditing ? props.team.name : "",
     teamDesc: isEditing ? props.team.description : "",
     synonym: isEditing ? props.team.signature : "",
   });
+
+  const teamLeaderData = users
+    .filter(
+      (user) =>
+        user.role !== "ADMIN" &&
+        user.role !== "TECHNICAL_MANAGER" &&
+        user.enabled !== false
+    )
+    .map((item) => ({
+      key: item.id,
+      value: `${item.email}`,
+    }));
+  const membersData = teamLeaderData.filter(
+    (user) => user.value !== selectedTeamLeader
+  );
 
   const createUserObject = (user) => ({
     memberId: user.id,
@@ -48,15 +55,12 @@ const AddEditTeamModal = (props) => {
   const addTeamHandler = async () => {
     try {
       let teamLeader = users.filter(
-        (user) => user.firstname === selectedTeamLeader.split(" ")[0]
+        (user) => user.email === selectedTeamLeader
       );
-      teamLeader = createUserObject(teamLeader[0])
+      teamLeader = createUserObject(teamLeader[0]);
 
-      const selectedFirstNames = selectedMembers.map(
-        (name) => name.split(" ")[0]
-      );
       let selectedUsers = users.filter((user) =>
-        selectedFirstNames.includes(user.firstname)
+        selectedMembers.includes(user.email)
       );
       const members = selectedUsers.map(createUserObject);
 
@@ -65,7 +69,7 @@ const AddEditTeamModal = (props) => {
         description: teamDetails.teamDesc,
         signature: teamDetails.synonym,
         teamLeader: teamLeader,
-        members: members,
+        members: [teamLeader, ...members],
       };
       const resp = await dispatch(addTeam(teamData));
       clearInputs();
@@ -76,17 +80,20 @@ const AddEditTeamModal = (props) => {
   };
 
   const editTeamHandler = async () => {
+    let teamLeader = users.filter((user) => user.email === selectedTeamLeader);
+    teamLeader =
+      Array.isArray(teamLeader) &&
+      teamLeader.length > 0 &&
+      createUserObject(teamLeader[0]);
+
     const teamData = {
-      id: props.team.teamId,
+      teamId: props.team.teamId,
       name: teamDetails.teamName,
       description: teamDetails.teamDesc,
-      signature: teamDetails.synonym,
+      teamLeader: teamLeader ? teamLeader : props.team?.teamLeader,
     };
     const resp = await dispatch(editTeamDetails(teamData));
-    if (resp) {
-      clearInputs();
-      props.navigation.goBack();
-    }
+    resp && props.navigation.goBack();
   };
 
   const clearInputs = () => {
@@ -123,75 +130,84 @@ const AddEditTeamModal = (props) => {
       onBackdropPress={props.closeModal}
     >
       <View style={styles.modalView}>
-        <View style={styles.modalContent}>
-          <View style={styles.inputWidth}>
-            <Input
-              label="Team name"
-              value={teamDetails.teamName}
-              onUpdateValue={(value) =>
-                changeTeamDetailsHandler("teamName", value)
-              }
-              borderColor={Colors.lightGrey}
-            />
-          </View>
-          <View style={styles.inputWidth}>
-            <Input
-              label="Team Description"
-              value={teamDetails.teamDesc}
-              onUpdateValue={(value) =>
-                changeTeamDetailsHandler("teamDesc", value)
-              }
-              borderColor={Colors.lightGrey}
-            />
-          </View>
-          <View style={styles.inputWidth}>
-            <Input
-              label="Team Key"
-              value={teamDetails.synonym}
-              onUpdateValue={(value) =>
-                changeTeamDetailsHandler("synonym", value)
-              }
-              borderColor={Colors.lightGrey}
-              multiline={true}
-              maxLength={5}
-            />
-          </View>
+        <ScrollView style={styles.scrolling}>
+          <View style={styles.modalContent}>
+            <View style={styles.inputWidth}>
+              <Input
+                label="Team name"
+                value={teamDetails.teamName}
+                onUpdateValue={(value) =>
+                  changeTeamDetailsHandler("teamName", value)
+                }
+                borderColor={Colors.lightGrey}
+              />
+            </View>
+            <View style={styles.inputWidth}>
+              <Input
+                label="Team Description"
+                value={teamDetails.teamDesc}
+                onUpdateValue={(value) =>
+                  changeTeamDetailsHandler("teamDesc", value)
+                }
+                borderColor={Colors.lightGrey}
+              />
+            </View>
+            {!isEditing && (
+              <View style={styles.inputWidth}>
+                <Input
+                  label="Team Key"
+                  value={teamDetails.synonym}
+                  onUpdateValue={(value) =>
+                    changeTeamDetailsHandler("synonym", value)
+                  }
+                  borderColor={Colors.lightGrey}
+                  multiline={true}
+                  maxLength={5}
+                />
+              </View>
+            )}
 
-          {/* TODO: add input fields to choose teamLeader and members */}
-          <View style={styles.members}>
-            <SelectList
-              save="value"
-              placeholder="Select Team Leader "
-              data={selectUsers}
-              setSelected={onSelectedTeamLeader}
-            />
+            <View style={styles.members}>
+              <SelectList
+                save="value"
+                placeholder="Select Team Leader "
+                data={teamLeaderData}
+                setSelected={onSelectedTeamLeader}
+                defaultOption={{
+                  key: isEditing && props.team?.teamLeader.memberId,
+                  value: isEditing && props.team?.teamLeader.email,
+                }}
+              />
 
-            <MultipleSelectList
-              data={selectUsers}
-              maxHeight={200}
-              label="Members:"
-              save="value"
-              setSelected={onSelectedMembers}
-              placeholder="Select members "
-            />
-          </View>
+              {!isEditing && (
+                <MultipleSelectList
+                  data={membersData}
+                  maxHeight={200}
+                  label="Members:"
+                  save="value"
+                  setSelected={onSelectedMembers}
+                  placeholder="Select members "
+                />
+              )}
+            </View>
 
-          <View style={styles.buttons}>
-            <Button
-              onPress={isEditing ? editTeamHandler : addTeamHandler}
-              btnStyle={[styles.btnStyle, styles.activeBtnStyle]}
-            >
-              {isLoading ? <DotPulse /> : isEditing ? "Save" : "Add"}
-            </Button>
-            <Button
-              onPress={props.closeModal}
-              btnStyle={styles.btnStyle}
-              textColor={Colors.lightBlack}
-            >
-              {"Cancel"}
-            </Button>
+            <View style={styles.buttons}>
+              <Button
+                onPress={isEditing ? editTeamHandler : addTeamHandler}
+                btnStyle={[styles.btnStyle, styles.activeBtnStyle]}
+              >
+                {isLoading ? <DotPulse /> : isEditing ? "Save" : "Add"}
+              </Button>
+              <Button
+                onPress={props.closeModal}
+                btnStyle={styles.btnStyle}
+                textColor={Colors.lightBlack}
+              >
+                {"Cancel"}
+              </Button>
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </View>
     </Modal>
   );
@@ -203,6 +219,9 @@ const styles = StyleSheet.create({
     margin: 0,
     alignItems: "center",
     justifyContent: "center",
+  },
+  scrolling: {
+    width: "100%",
   },
   modalView: {
     width: "96%",

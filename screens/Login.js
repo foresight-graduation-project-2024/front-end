@@ -44,14 +44,9 @@ const Login = ({ navigation }) => {
         const token = await AsyncStorage.getItem("authToken");
         const role = await AsyncStorage.getItem("role");
         const id = await AsyncStorage.getItem("userID");
-        const tokenTime = await AsyncStorage.getItem("tokenTime");
 
-        const currentDay = moment().toISOString();
-        const tokenExpired = moment(currentDay).diff(tokenTime, "days");
-
-        if (tokenExpired > 1) dispatch(authLogout());
         if (token && id) await dispatch(getUserInfo(id));
-        if (isRememberMe === "true" && token && tokenExpired < 1) {
+        if (isRememberMe === "true" && token) {
           if (role === "ADMIN") navigation.replace("Manager");
           else navigation.replace("Task");
         }

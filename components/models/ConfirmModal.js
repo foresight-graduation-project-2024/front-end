@@ -27,7 +27,6 @@ const ConfirmModal = (props) => {
             <Button
               onPress={props.confirmBtn}
               btnStyle={styles.btnStyle}
-              textColor={Colors.black}
             >
               {isLoading ? <DotPulse /> : "Confirm"}
             </Button>
@@ -60,7 +59,7 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: Colors.white,
     borderRadius: 20,
-    padding: 12,
+    padding: 16,
   },
   titleStyle: {
     width: "100%",
@@ -83,7 +82,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   btnStyle: {
-    backgroundColor: Colors.dammed,
+    backgroundColor: Colors.error,
     marginBottom: 8,
   },
 });

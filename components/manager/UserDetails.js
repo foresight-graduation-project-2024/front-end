@@ -56,32 +56,35 @@ const UserDetails = ({ route, navigation }) => {
         <Text>{user.role}</Text>
       </View>
 
-      <TouchableOpacity style={styles.btnContent} onPress={navToAddEditUser}>
-        <Text style={styles.btnText}>{"Edit User"}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.btnContent} onPress={changePasswordHandler}>
-        <Text style={styles.btnText}>{"Change Password"}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[
-          styles.btnContent,
-          { backgroundColor: user.enabled ? Colors.error : Colors.primary },
-        ]}
-        onPress={activateHandler}
-      >
-        <Text style={styles.btnText}>
-          {user.enabled ? "Deactivate" : "Activate"}
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.buttons}>
+        <TouchableOpacity style={styles.btnContent} onPress={navToAddEditUser}>
+          <Text style={styles.btnText}>{"Edit User"}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btnContent} onPress={changePasswordHandler}>
+          <Text style={styles.btnText}>{"Change Password"}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.btnContent,
+            { backgroundColor: user.enabled ? Colors.error : Colors.primary },
+          ]}
+          onPress={activateHandler}
+        >
+          <Text style={styles.btnText}>
+            {user.enabled ? "Deactivate" : "Activate"}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: "center",
+    flex: 1,
+    justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 24,
+    paddingVertical: 32,
   },
   userInformation: {
     width: "92%",
@@ -101,8 +104,13 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginBottom: 16,
   },
+  buttons: {
+    width: "92%", 
+    alignSelf: "center", 
+    justifyContent: "flex-end"
+  },
   btnContent: {
-    width: "92%",
+    // width: "92%",
     alignItems: "center",
     backgroundColor: Colors.primary,
     paddingVertical: 12,

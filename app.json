@@ -11,8 +11,15 @@
       "backgroundColor": "#fff"
     },
     "assetBundlePatterns": ["**/*"],
+    "extra": {
+      "supportsRTL": true
+    },
+    "plugins": ["expo-localization"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,6 +28,10 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "locales": {
+      "ar": "./assets/i18n/ar.json",
+      "en": "./assets/i18n/en.json"
     }
   }
 }

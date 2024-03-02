@@ -2,10 +2,17 @@ import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { StyleSheet, Text, View, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Localization from 'expo-localization';
+import i18n from "i18n-js";
+import { ar, en } from "../assets/i18n";
 
 import { Colors } from "../constants/config";
 import { getUserInfo } from "../store/actions/Authentication";
 import Indicator from "../components/custom/Indicator";
+
+i18n.enableFallback = true;
+i18n.translations = { ar, en };
+i18n.locale = Localization.locale;
 
 const Splash = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -42,8 +49,11 @@ const Splash = ({ navigation }) => {
       </View>
       <View style={styles.copyrightView}>
         <Text style={styles.copyrightText}>
-          ® جميع الحقوق محفوظة
+          {i18n.t("copyright")}
         </Text>
+        {/* <Text style={styles.copyrightText}>
+          ®All Rights Reserved
+        </Text> */}
       </View>
     </View>
   );

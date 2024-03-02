@@ -7,18 +7,24 @@ const TaskCard = (props) => {
     <TouchableOpacity style={styles.taskContent} onPress={props.onPress}>
       <View>
         <Text style={styles.taskSummary}>{props.summary}</Text>
-        <Text style={styles.taskLabel}>{props.priority}</Text>
+        <View style={styles.labelContent}>
+          <Text>{props.priority}</Text>
+        </View>
       </View>
       <View style={styles.taskFooter}>
-        {/* <Text style={styles.assigneeText}>
-          {members.firstname[0]}{members.lastname[0]}
-        </Text> */}
         <Text>{props.signature}</Text>
         <View style={styles.assigneeContainer}>
-          <Text style={styles.assigneeText}>
-            {"M"}
-            {"H"}
-          </Text>
+          {props.assignee ? (
+            <Text style={styles.assigneeText}>
+              {props.assignee.firstname[0]}
+              {props.assignee.lastname[0]}
+            </Text>
+          ) : (
+            <Text style={styles.assigneeText}>
+              {"N"}
+              {"A"}
+            </Text>
+          )}
         </View>
       </View>
     </TouchableOpacity>
@@ -32,17 +38,30 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginVertical: 4,
   },
+  taskSummary: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  labelContent: {
+    width: "25%",
+    alignItems: "center",
+    backgroundColor: Colors.white,
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+    marginTop: 12,
+    borderRadius: 4,
+  },
   taskFooter: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginTop: 4,
   },
   assigneeContainer: {
     width: 24,
     height: 24,
     backgroundColor: Colors.primary,
     borderRadius: 12,
-    marginTop: 12,
   },
   assigneeText: {
     textAlign: "center",

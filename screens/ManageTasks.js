@@ -6,23 +6,26 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Image,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 
-import { Colors, STATUS } from "../constants/config";
+import { Colors, STATUS, shadowStyle } from "../constants/config";
 import AddEditIssueModal from "../components/models/AddEditIssueModal";
 import TaskCard from "../components/taskManager/TaskCard";
-import { deleteTeam, getTaskDetails, getTeamTasks } from "../store/actions/Tasks";
+import {
+  deleteTeam,
+  getTaskDetails,
+  getTeamTasks,
+} from "../store/actions/Tasks";
 import AddEditTeamModal from "../components/models/AddEditTeamModal";
 import ConfirmModal from "../components/models/ConfirmModal";
 import TaskDetailsModal from "../components/models/TaskDetailsModal";
+import MembersModal from "../components/models/MembersModal";
 
 const { width } = Dimensions.get("window");
-
-// const teams = [];
-// const members = [];
 
 const ManageTasks = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -31,12 +34,14 @@ const ManageTasks = ({ navigation, route }) => {
   const [showAddIssue, setShowAddIssue] = useState(false);
   const [showAddTeam, setShowAddTeam] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [showMemberModal, setShowMemberModal] = useState(false);
   const [showTaskDetails, setShowTaskDetails] = useState(false);
   const [taskDetails, setTaskDetails] = useState();
 
   const data = route.params?.teamData;
   const allTeamTasks = data.teamTasks;
-  // console.log(allTeamTasks);
+  const allMembers = data.members;
+  // console.log(allMembers);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -92,11 +97,20 @@ const ManageTasks = ({ navigation, route }) => {
       setTaskDetails(taskData);
       setShowTaskDetails(true);
     }
-  }
+  };
 
   const closeTaskDetailsHandler = () => {
     setShowTaskDetails(false);
-  }
+  };
+
+  const openMemberModalHandler = () => {
+    setShowMemberModal(true);
+  };
+  const closeMemberModalHandler = () => {
+    setShowMemberModal(false);
+  };
+
+  // console.log(data)
 
   return (
     <View style={styles.mainContainer}>
@@ -120,13 +134,51 @@ const ManageTasks = ({ navigation, route }) => {
         title={"Are you sure you want to delete this team?"}
         confirmBtn={deleteTeamHandler}
       />
-      <TaskDetailsModal 
+      <TaskDetailsModal
         showModal={showTaskDetails}
         closeModal={closeTaskDetailsHandler}
         taskDetails={taskDetails}
+        allMembers={allMembers}
+      />
+      <MembersModal
+        showModal={showMemberModal}
+        closeModal={closeMemberModalHandler}
+        allMembers={allMembers}
+        teamId={data.teamId}
       />
 
-      {/* TODO Show members if this member is the team leader of technical manager */}
+      {user.role === "TECHNICAL_MANAGER" && (
+        <View style={styles.membersContent}>
+          <View style={styles.members}>
+            {allMembers?.length > 0 &&
+              allMembers.map((data, index) => (
+                <>
+                  {index < 6 ? (
+                    <View key={index} style={styles.assigneeContainer}>
+                      <Text style={styles.assigneeText}>
+                        {data.firstname[0]}
+                        {data.lastname[0]}
+                      </Text>
+                    </View>
+                  ) : (
+                    <View key={index} style={styles.assigneeContainer}>
+                      <Text style={styles.assigneeText}>
+                        +{allMembers?.length - 6}
+                      </Text>
+                    </View>
+                  )}
+                </>
+              ))}
+          </View>
+
+          <TouchableOpacity onPress={openMemberModalHandler}>
+            <Image
+              source={require("../assets/add-user.png")}
+              style={styles.addImg}
+            />
+          </TouchableOpacity>
+        </View>
+      )}
 
       <SwiperFlatList
         data={STATUS}
@@ -138,16 +190,17 @@ const ManageTasks = ({ navigation, route }) => {
             <View style={styles.tasksContainer}>
               <View style={styles.taskType}>
                 <Text style={styles.taskTypeHeader}>{item}</Text>
-                <Text>({filteredTasks.length})</Text>
+                <Text>({filteredTasks?.length || 0})</Text>
               </View>
               <ScrollView style={styles.scrollStyle}>
-                {filteredTasks.length > 0 ? (
+                {filteredTasks?.length > 0 ? (
                   filteredTasks.map((data, index) => (
                     <TaskCard
                       key={index}
                       signature={data.title}
                       summary={data.summary}
                       priority={data.priority}
+                      assignee={data.assignee}
                       onPress={() => taskPressHandler(data)}
                     />
                   ))
@@ -187,6 +240,34 @@ const styles = StyleSheet.create({
   mainContainer: {
     width: "100%",
     padding: 12,
+  },
+  membersContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginHorizontal: 12,
+    marginBottom: 4,
+  },
+  members: {
+    flexDirection: "row",
+  },
+  assigneeContainer: {
+    width: 34,
+    height: 34,
+    justifyContent: "center",
+    backgroundColor: Colors.primary,
+    borderRadius: 17,
+    marginLeft: -4,
+    borderWidth: 1,
+    borderColor: Colors.lightGrey,
+  },
+  assigneeText: {
+    textAlign: "center",
+    color: Colors.white,
+  },
+  addImg: {
+    width: 24,
+    height: 24,
   },
   tasksContainer: {
     width: width - 22,
@@ -232,19 +313,6 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 6,
     marginVertical: 4,
-  },
-  assigneeContainer: {
-    width: 24,
-    height: 24,
-    backgroundColor: Colors.primary,
-    borderRadius: 12,
-    marginTop: 12,
-  },
-  assigneeText: {
-    textAlign: "center",
-    fontSize: 10,
-    color: Colors.white,
-    marginTop: 5,
   },
   addIssue: {
     flexDirection: "row",

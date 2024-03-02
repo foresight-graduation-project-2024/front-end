@@ -169,6 +169,38 @@ export const deleteTask = (teamId, taskId) => async (dispatch) => {
   }
 }
 
+export const addMembers = (id, members) => async (dispatch) => {
+  try {
+    dispatch(uiStartLoading());
+    const headers = await dispatch(getCurToken());
+    await axios({
+      method: "POST",
+      url: baseUrl + `/team/member/${id}`,
+      data: members,
+      headers
+    });
+    return true;
+  } catch (error) {
+    console.log("getUsers ERROR ==>", error.response.data.code);
+  } finally {
+    dispatch(uiStopLoading());
+  }
+}
+
+export const deleteMember = (teamId, memberId) => async (dispatch) => {
+  try {
+    dispatch(uiStartLoading());
+    const headers = await dispatch(getCurToken());
+    await axios.delete(`${baseUrl}/team/member/${teamId}/${memberId}`, { headers });
+    dispatch(getTeamDetails(teamId));
+    return true;
+  } catch (error) {
+    console.log("deleteMember ERROR ==>", error.response.data.code);
+  } finally {
+    dispatch(uiStopLoading());
+  }
+}
+
 export const addComment = (taskId, commentDetails) => async (dispatch) => {
   try {
     dispatch(uiStartLoading())

@@ -6,10 +6,13 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  TextInput,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-native-modal";
 import { Ionicons } from "@expo/vector-icons";
+import { SelectList } from "react-native-dropdown-select-list";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { Colors, PRIORITY, STATUS } from "../../constants/config";
 import ConfirmModal from "./ConfirmModal";
@@ -28,7 +31,53 @@ const TaskDetailsModal = (props) => {
   };
 
   const [deleteModal, setDeleteModal] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isEndDateVisible, setIsEndDateVisibility] = useState(false);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
   const [dropdowns, setDropdowns] = useState(initialDropdownState);
+  const [newTaskSummary, setNewTaskSummary] = useState("");
+  const [newTaskDesc, setNewTaskDesc] = useState("");
+  const [selectedAssignee, setSelectedAssignee] = useState("");
+
+  const startDateFormat = startTime
+    ? `${String(startTime.getDate()).padStart(2, "0")}-${String(
+        startTime.getMonth() + 1
+      ).padStart(2, "0")}-${startTime.getFullYear()}, ${String(
+        startTime.getHours()
+      ).padStart(2, "0")}:${String(startTime.getMinutes()).padStart(2, "0")}`
+    : props.taskDetails?.startDate.replace("T", ", ");
+
+  const endDateFormat = endTime
+    ? `${String(endTime.getDate()).padStart(2, "0")}-${String(
+        endTime.getMonth() + 1
+      ).padStart(2, "0")}-${endTime.getFullYear()}, ${String(
+        endTime.getHours()
+      ).padStart(2, "0")}:${String(endTime.getMinutes()).padStart(2, "0")}`
+    : props.taskDetails?.endDate.replace("T", ", ");
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+  const showEndDatePicker = () => {
+    setIsEndDateVisibility(true);
+  };
+  const hideEndDatePicker = () => {
+    setIsEndDateVisibility(false);
+  };
+
+  const startTimeConfirm = (date) => {
+    setStartTime(date);
+    hideDatePicker();
+  };
+
+  const endTimeConfirm = (date) => {
+    setEndTime(date);
+    hideEndDatePicker();
+  };
 
   const toggleDropdown = (name) => {
     setDropdowns((prevState) => ({
@@ -42,6 +91,10 @@ const TaskDetailsModal = (props) => {
       ...prevState,
       [name]: { ...prevState[name], isVisible: false, selected: item },
     }));
+  };
+
+  const onSelectedAssignee = (selectedUser) => {
+    setSelectedAssignee(selectedUser);
   };
 
   const openDeleteModal = () => {
@@ -60,6 +113,8 @@ const TaskDetailsModal = (props) => {
       props.closeModal();
     }
   };
+
+  // console.log(props.taskDetails);
 
   return (
     <Modal animationType="slide" style={styles.modal} visible={props.showModal}>
@@ -89,13 +144,25 @@ const TaskDetailsModal = (props) => {
 
             {/* TODO: make title and description can be edit */}
             <Text style={styles.taskNum}>{props.taskDetails?.title}</Text>
-            <Text style={styles.taskSummary}>{props.taskDetails?.summary}</Text>
+            <TextInput
+              style={styles.taskSummary}
+              multiline
+              defaultValue={props.taskDetails?.summary}
+              onChangeText={(text) => {
+                setNewTaskSummary(text);
+              }}
+            />
 
             <Text style={styles.desc}>Description:</Text>
             <View style={styles.descContent}>
-              <Text style={styles.descText}>
-                {props.taskDetails?.description}
-              </Text>
+              <TextInput
+                style={styles.descText}
+                multiline
+                defaultValue={props.taskDetails?.description}
+                onChangeText={(text) => {
+                  setNewTaskDesc(text);
+                }}
+              />
             </View>
 
             <View style={styles.dropdownContainer}>
@@ -121,15 +188,56 @@ const TaskDetailsModal = (props) => {
               />
             </View>
 
+            <Text style={[styles.desc, { marginBottom: 6 }]}>Assignee:</Text>
+            <SelectList
+              save="value"
+              placeholder="Select Assignee "
+              data={props.allMembers}
+              setSelected={onSelectedAssignee}
+              defaultOption={{
+                key: props.taskDetails?.assignee?.memberId || null,
+                value: props.taskDetails?.assignee?.email || null,
+              }}
+            />
+
             {/* TODO: make start and end times can be edit with icons */}
             <Text style={styles.desc}>Start date:</Text>
-            <Text style={styles.descValue}>
-              {props.taskDetails?.startDate.replace("T", ", ")}
-            </Text>
+            <View style={styles.timeContent}>
+              <Text style={styles.descValue}>
+                {startDateFormat}
+              </Text>
+              <TouchableOpacity onPress={showDatePicker}>
+                <Image
+                  source={require("../../assets/calendar.png")}
+                  style={styles.calendarImg}
+                />
+              </TouchableOpacity>
+            </View>
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              mode="datetime"
+              onConfirm={startTimeConfirm}
+              onCancel={hideDatePicker}
+            />
+
             <Text style={styles.desc}>End date:</Text>
-            <Text style={styles.descValue}>
-              {props.taskDetails?.endDate.replace("T", ", ")}
-            </Text>
+            <View style={styles.timeContent}>
+              <Text style={styles.descValue}>
+                {endDateFormat}
+              </Text>
+              <TouchableOpacity onPress={showEndDatePicker}>
+                <Image
+                  source={require("../../assets/calendar.png")}
+                  style={styles.calendarImg}
+                />
+              </TouchableOpacity>
+            </View>
+            <DateTimePickerModal
+              isVisible={isEndDateVisible}
+              mode="datetime"
+              onConfirm={endTimeConfirm}
+              onCancel={hideEndDatePicker}
+            />
 
             <Text style={styles.desc}>Comments:</Text>
           </View>
@@ -200,6 +308,12 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 2,
   },
+  timeContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: -2
+  },
   descContent: {
     justifyContent: "center",
     padding: 12,
@@ -213,12 +327,16 @@ const styles = StyleSheet.create({
     marginLeft: 2,
     lineHeight: 20,
   },
-  dropdownContainer: { 
-    width: "112%", 
-    alignSelf: "center" 
+  dropdownContainer: {
+    width: "112%",
+    alignSelf: "center",
   },
   descValue: {
     marginLeft: 4,
+  },
+  calendarImg: {
+    width: 32,
+    height: 32,
   },
   buttons: {
     flexDirection: "row-reverse",

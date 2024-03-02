@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-native-modal";
 import {
@@ -69,7 +69,7 @@ const AddEditTeamModal = (props) => {
         description: teamDetails.teamDesc,
         signature: teamDetails.synonym,
         teamLeader: teamLeader,
-        members: [teamLeader, ...members],
+        members: members,
       };
       const resp = await dispatch(addTeam(teamData));
       clearInputs();
@@ -168,6 +168,9 @@ const AddEditTeamModal = (props) => {
             )}
 
             <View style={styles.members}>
+              {isEditing && (
+                <Text>Team Leader:</Text>
+              )}
               <SelectList
                 save="value"
                 placeholder="Select Team Leader "

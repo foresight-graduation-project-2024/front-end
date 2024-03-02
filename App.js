@@ -16,6 +16,7 @@ import { configureStore } from "./store/store";
 import ManageTasks from "./screens/ManageTasks";
 import Teams from "./components/taskManager/Teams";
 import Issues from "./components/taskManager/Issues";
+import Splash from "./screens/Splash";
 
 const Stack = createNativeStackNavigator();
 const bottomTab = createBottomTabNavigator();
@@ -82,6 +83,11 @@ export default function App() {
             headerTintColor: "white",
           }}
         >
+          <Stack.Screen
+            name="Splash"
+            component={Splash}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="Foresight"
             component={Login}

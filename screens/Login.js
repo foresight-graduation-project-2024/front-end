@@ -9,8 +9,6 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import moment from "moment";
 // import i18n from "i18n-js";
 
 import Input from "../components/custom/Input";
@@ -18,8 +16,6 @@ import Button from "../components/custom/Button";
 import { Colors } from "../constants/config";
 import {
   accountDeactivatedThunk,
-  authLogout,
-  getUserInfo,
   signInFailedThunk,
   verifyLogIn,
 } from "../store/actions/Authentication";
@@ -36,27 +32,6 @@ const Login = ({ navigation }) => {
   const [isSecure, setIsSecure] = useState(true);
   const [isLoginFailed, setIsLoginFailed] = useState(false);
   const [isAccountDeactivated, setIsAccountDeactivated] = useState(false);
-
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const isRememberMe = await AsyncStorage.getItem("isRemember");
-        const token = await AsyncStorage.getItem("authToken");
-        const role = await AsyncStorage.getItem("role");
-        const id = await AsyncStorage.getItem("userID");
-
-        if (token && id) await dispatch(getUserInfo(id));
-        if (isRememberMe === "true" && token) {
-          if (role === "ADMIN") navigation.replace("Manager");
-          else navigation.replace("Task");
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    checkLoginStatus();
-  }, []);
 
   const toggleCheckbox = useCallback(() => {
     setIsRemember((prevIsRemember) => !prevIsRemember);

@@ -52,9 +52,6 @@ const Splash = ({ navigation }) => {
         <Text style={styles.copyrightText}>
           {i18n.t("copyright")}
         </Text>
-        {/* <Text style={styles.copyrightText}>
-          ®All Rights Reserved
-        </Text> */}
       </View>
     </View>
   );

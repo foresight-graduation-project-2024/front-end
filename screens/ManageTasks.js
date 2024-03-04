@@ -12,14 +12,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 
-import { Colors, STATUS, shadowStyle } from "../constants/config";
-import AddEditIssueModal from "../components/models/AddEditIssueModal";
-import TaskCard from "../components/taskManager/TaskCard";
+import { Colors, STATUS } from "../constants/config";
 import {
   deleteTeam,
   getTaskDetails,
-  getTeamTasks,
 } from "../store/actions/Tasks";
+import TaskCard from "../components/taskManager/TaskCard";
+import AddTaskModal from "../components/models/AddTaskModal";
 import AddEditTeamModal from "../components/models/AddEditTeamModal";
 import ConfirmModal from "../components/models/ConfirmModal";
 import TaskDetailsModal from "../components/models/TaskDetailsModal";
@@ -41,7 +40,6 @@ const ManageTasks = ({ navigation, route }) => {
   const data = route.params?.teamData;
   const allTeamTasks = data.teamTasks;
   const allMembers = data.members;
-  // console.log(allMembers);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -110,11 +108,9 @@ const ManageTasks = ({ navigation, route }) => {
     setShowMemberModal(false);
   };
 
-  // console.log(data)
-
   return (
     <View style={styles.mainContainer}>
-      <AddEditIssueModal
+      <AddTaskModal
         showModal={showAddIssue}
         teamId={data.teamId}
         closeModal={closeAddIssue}
@@ -145,6 +141,7 @@ const ManageTasks = ({ navigation, route }) => {
         closeModal={closeMemberModalHandler}
         allMembers={allMembers}
         teamId={data.teamId}
+        teamLeader={data.teamLeader.email}
       />
 
       {user.role === "TECHNICAL_MANAGER" && (
@@ -152,22 +149,22 @@ const ManageTasks = ({ navigation, route }) => {
           <View style={styles.members}>
             {allMembers?.length > 0 &&
               allMembers.map((data, index) => (
-                <>
+                <View key={index}>
                   {index < 6 ? (
-                    <View key={index} style={styles.assigneeContainer}>
+                    <View style={styles.assigneeContainer}>
                       <Text style={styles.assigneeText}>
                         {data.firstname[0]}
                         {data.lastname[0]}
                       </Text>
                     </View>
                   ) : (
-                    <View key={index} style={styles.assigneeContainer}>
+                    <View style={styles.assigneeContainer}>
                       <Text style={styles.assigneeText}>
                         +{allMembers?.length - 6}
                       </Text>
                     </View>
                   )}
-                </>
+                </View>
               ))}
           </View>
 

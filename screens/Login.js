@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Ionicons from "react-native-vector-icons/Ionicons";
-// import i18n from "i18n-js";
+import i18n from "../constants/Localization";
 
 import Input from "../components/custom/Input";
 import Button from "../components/custom/Button";
@@ -66,20 +66,19 @@ const Login = ({ navigation }) => {
       </View>
 
       <View style={styles.subContent}>
-        <Text style={styles.welcomeTitle}>Welcome back!</Text>
-        {/* <Text style={styles.welcomeTitle}>{i18n.t("welcomeBack")}</Text> */}
-        <Text style={styles.title}>Please enter your details</Text>
+        <Text style={styles.welcomeTitle}>{i18n.t("welcomeBack")}</Text>
+        <Text style={styles.title}>{i18n.t("enterYourDetails")}</Text>
       </View>
 
       <View style={styles.inputField}>
         <Input
-          label="Email Address"
+          label={i18n.t("email")}
           value={email}
           onUpdateValue={setEmail}
           keyboardType="email-address"
         />
         <Input
-          label="Password"
+          label={i18n.t("password")}
           secure={isSecure}
           value={password}
           onUpdateValue={setPassword}
@@ -91,11 +90,11 @@ const Login = ({ navigation }) => {
           onPressRightIcon={togglePasswordVisibility}
         />
         {isLoginFailed && (
-          <Text style={styles.validation}>Invalid Email or Password!</Text>
+          <Text style={styles.validation}>{i18n.t("loginFail")}</Text>
         )}
 
         {isAccountDeactivated && (
-          <Text style={styles.validation}>Your Account is Deactivated!</Text>
+          <Text style={styles.validation}>{i18n.t("yourDeactivate")}</Text>
         )}
       </View>
 
@@ -105,10 +104,10 @@ const Login = ({ navigation }) => {
             name={isRemember ? "checkbox" : "square-outline"}
             size={20}
             color={isRemember ? Colors.primary : Colors.grey}
-            style={{ marginRight: 4 }}
+            style={styles.checkIcon}
           />
         </TouchableOpacity>
-        <Text>Remember me</Text>
+        <Text>{i18n.t("rememberMe")}</Text>
       </View>
 
       <View style={styles.btnContainer}>
@@ -120,7 +119,7 @@ const Login = ({ navigation }) => {
           }}
           disabled={email === "" || password === ""}
         >
-          {isLoading ? <DotPulse /> : "Log In"}
+          {isLoading ? <DotPulse /> : i18n.t("logIn")}
         </Button>
       </View>
     </View>
@@ -167,6 +166,9 @@ const styles = StyleSheet.create({
     marginVertical: 6,
     marginLeft: 4,
     fontSize: 12,
+  },
+  checkIcon: {
+    marginRight: 4,
   },
   btnContainer: {
     width: "35%",

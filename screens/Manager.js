@@ -14,7 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Colors } from "../constants/config";
 import Search from "../components/custom/Search";
-import { getUsers } from "../store/actions/Users";
+import { getUserTasks, getUserTeams, getUsers } from "../store/actions/Users";
 import Indicator from "./../components/custom/Indicator";
 import { authLogout } from "../store/actions/Authentication";
 import ListFilter from "../components/taskManager/ListFilter";
@@ -53,10 +53,19 @@ const Manager = ({ navigation }) => {
     navigation.navigate("Foresight");
   };
 
-  const navToUserDetails = (user) => {
-    navigation.navigate("UserDetails", {
-      user,
-    });
+  const navToUserDetails = async (user) => {
+    console.log("User id =>", user.id);
+    const userTeams = await dispatch(getUserTeams(user.id));
+    const userTasks = await dispatch(getUserTasks(user.id));
+
+    console.log("userTeams ==>", userTeams);
+    console.log("userTasks ==>", userTasks);
+
+    // navigation.navigate("UserDetails", {
+    //   user,
+    //   userTeams,
+    //   userTasks
+    // });
   };
 
   const navToAddEditUser = () => {

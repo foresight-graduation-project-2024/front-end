@@ -12,6 +12,7 @@ import Input from "../custom/Input";
 import Button from "../custom/Button";
 import DotPulse from "../custom/DotPulse";
 import { addTeam, editTeamDetails } from "../../store/actions/Tasks";
+import { createUserObject } from "../../constants/Utility";
 
 const AddEditTeamModal = (props) => {
   const dispatch = useDispatch();
@@ -43,14 +44,6 @@ const AddEditTeamModal = (props) => {
   const membersData = teamLeaderData.filter(
     (user) => user.value !== selectedTeamLeader
   );
-
-  const createUserObject = (user) => ({
-    memberId: user.id,
-    firstname: user.firstname,
-    lastname: user.lastname,
-    email: user.email,
-    role: user.role,
-  });
 
   const addTeamHandler = async () => {
     try {
@@ -120,6 +113,16 @@ const AddEditTeamModal = (props) => {
   const onSelectedTeamLeader = (selectedUser) => {
     setSelectedTeamLeader(selectedUser);
   };
+
+  const checkValidation = () => {
+    return (
+      teamDetails.teamName.trim() !== "" &&
+      teamDetails.teamDesc.trim() !== "" &&
+      teamDetails.synonym.trim() !== "" &&
+      selectedTeamLeader?.length > 0 &&
+      (isEditing || selectedMembers?.length > 0)
+    );
+  }
 
   return (
     <Modal
@@ -197,7 +200,11 @@ const AddEditTeamModal = (props) => {
             <View style={styles.buttons}>
               <Button
                 onPress={isEditing ? editTeamHandler : addTeamHandler}
-                btnStyle={[styles.btnStyle, styles.activeBtnStyle]}
+                btnStyle={[styles.btnStyle, {
+                  backgroundColor: checkValidation() ? Colors.primary : Colors.dammed,
+                }]}
+                textColor={checkValidation() ? Colors.white : Colors.lightBlack}
+                disabled={!checkValidation()}
               >
                 {isLoading ? <DotPulse /> : isEditing ? "Save" : "Add"}
               </Button>
@@ -260,9 +267,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.lightGrey,
     marginTop: 36,
     marginHorizontal: 12,
-  },
-  activeBtnStyle: {
-    backgroundColor: Colors.primary,
   },
 });
 

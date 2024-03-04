@@ -29,9 +29,11 @@ export const verifyLogIn = (authData, isRememberMe) => async (dispatch) => {
     dispatch(uiStartLoading());
     const response = await axios.post(`${baseUrl}/login`, authData);
     const token = response.data.token;
+    const role = response.data.role;
     const id = response.data.id;
 
     AsyncStorage.setItem("authToken", token);
+    AsyncStorage.setItem("role", role);
     AsyncStorage.setItem("userID", id.toString());
     AsyncStorage.setItem("isRemember", isRememberMe.toString());
 

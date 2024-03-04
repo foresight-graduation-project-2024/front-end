@@ -26,7 +26,7 @@ function Input(props) {
           secureTextEntry={props.secure}
           value={props.value}
           onChangeText={props.onUpdateValue}
-          multiline={props.multiline}
+          multiline={props.multiline || true}
           maxLength={props.maxLength || 120}
         />
         {props.rightIcon && (

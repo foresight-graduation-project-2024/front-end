@@ -11,14 +11,15 @@ import { useDispatch, useSelector } from "react-redux";
 import Modal from "react-native-modal";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
+import { addTask } from "../../store/actions/Tasks";
 import { Colors, PRIORITY, STATUS } from "../../constants/config";
+import { timeFormat } from "../../constants/Utility";
 import Input from "../custom/Input";
 import Dropdown from "../custom/Dropdown";
 import DotPulse from "../custom/DotPulse";
 import Button from "../custom/Button";
-import { addTask } from "../../store/actions/Tasks";
 
-const AddEditIssueModal = (props) => {
+const AddTaskModal = (props) => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.ui.isLoading);
 
@@ -36,19 +37,11 @@ const AddEditIssueModal = (props) => {
   const [endTime, setEndTime] = useState(null);
 
   const startDateFormat = startTime
-    ? `${String(startTime.getDate()).padStart(2, "0")}-${String(
-        startTime.getMonth() + 1
-      ).padStart(2, "0")}-${startTime.getFullYear()}, ${String(
-        startTime.getHours()
-      ).padStart(2, "0")}:${String(startTime.getMinutes()).padStart(2, "0")}`
+    ? timeFormat(startTime)
     : "YYYY-MMM-DD, HH-MM";
 
   const endDateFormat = endTime
-    ? `${String(endTime.getDate()).padStart(2, "0")}-${String(
-        endTime.getMonth() + 1
-      ).padStart(2, "0")}-${endTime.getFullYear()}, ${String(
-        endTime.getHours()
-      ).padStart(2, "0")}:${String(endTime.getMinutes()).padStart(2, "0")}`
+    ? timeFormat(endTime)
     : "YYYY-MMM-DD, HH-MM";
 
   const showDatePicker = () => {
@@ -101,7 +94,6 @@ const AddEditIssueModal = (props) => {
     // console.log(props.teamId);
     // console.log(taskData);
     const resp = await dispatch(addTask(props.teamId, taskData));
-    console.log("resp ==>", resp);
     resp && props.navigation.goBack();
     clearInputs();
   };
@@ -112,6 +104,17 @@ const AddEditIssueModal = (props) => {
     setStartTime(null);
     setEndTime(null);
   };
+
+  const checkValidation = () => {
+    return (
+      summary.trim() !== "" &&
+      description.trim() !== "" &&
+      dropdowns.status.selected &&
+      dropdowns.priority.selected &&
+      !!startTime &&
+      !!endTime
+    );
+  }
 
   return (
     <Modal
@@ -204,7 +207,11 @@ const AddEditIssueModal = (props) => {
             <View style={styles.buttons}>
               <Button
                 onPress={addTaskHandler}
-                btnStyle={[styles.btnStyle, styles.activeBtnStyle]}
+                btnStyle={[styles.btnStyle, {
+                  backgroundColor: checkValidation() ? Colors.primary : Colors.dammed,
+                }]}
+                textColor={checkValidation() ? Colors.white : Colors.lightBlack}
+                disabled={!checkValidation()}
               >
                 {isLoading ? <DotPulse /> : "Add"}
               </Button>
@@ -278,9 +285,6 @@ const styles = StyleSheet.create({
     marginTop: 36,
     marginHorizontal: 12,
   },
-  activeBtnStyle: {
-    backgroundColor: Colors.primary,
-  },
 });
 
-export default AddEditIssueModal;
+export default AddTaskModal;

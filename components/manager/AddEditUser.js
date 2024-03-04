@@ -9,16 +9,16 @@ import {
   Image,
 } from "react-native";
 
-import { Colors } from "../../constants/config";
-import Input from "../custom/Input";
-import Button from "../custom/Button";
 import {
   addNewUser,
   editUserDetails,
   emailExist,
 } from "../../store/actions/Users";
+import { emailRegex, passwordRegex } from "../../constants/Validation";
+import { Colors } from "../../constants/config";
+import Input from "../custom/Input";
+import Button from "../custom/Button";
 import DotPulse from "../custom/DotPulse";
-import { emailRegex, passwordRegex } from "../../constants/config";
 
 const AddEditUser = ({ navigation, route }) => {
   const dispatch = useDispatch();

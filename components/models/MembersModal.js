@@ -9,7 +9,8 @@ import { Colors } from "../../constants/config";
 import Button from "../custom/Button";
 import DotPulse from "../custom/DotPulse";
 import ConfirmModal from "./ConfirmModal";
-import { deleteMember } from "../../store/actions/Tasks";
+import { addMembers, deleteMember } from "../../store/actions/Tasks";
+import { createUserObject } from "../../constants/Utility";
 
 const MembersModal = (props) => {
   const dispatch = useDispatch();
@@ -25,7 +26,8 @@ const MembersModal = (props) => {
       (user) =>
         user.role !== "ADMIN" &&
         user.role !== "TECHNICAL_MANAGER" &&
-        user.enabled !== false
+        user.enabled !== false &&
+        user.email !== props.teamLeader
     )
     .map((item) => ({
       key: item.id,
@@ -47,8 +49,14 @@ const MembersModal = (props) => {
     setDeleteModal(false);
   };
 
-  // TODO: Handle add members
-  const addMemberHandler = () => {};
+  const addMemberHandler = async () => {
+    let selectedUsers = users.filter((user) =>
+      selectedMembers.includes(user.email)
+    );
+    const members = selectedUsers.map(createUserObject);
+    const resp = await dispatch(addMembers(props.teamId, members))
+    resp && props.closeModal();
+  };
 
   const deleteMemberHandler = async () => {
     const resp = await dispatch(deleteMember(props.teamId, memberId));

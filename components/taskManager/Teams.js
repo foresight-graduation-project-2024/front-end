@@ -8,11 +8,15 @@ import { Colors } from "../../constants/config";
 import TeamCard from "./TeamCard";
 import AddEditTeamModal from "./../models/AddEditTeamModal";
 import { getAllTeams, getTeamDetails } from "../../store/actions/Tasks";
+import { getUsers } from "../../store/actions/Users";
+import Indicator from "../custom/Indicator";
 
 const Teams = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const teams = useSelector((state) => state.tasks.teams);
+  const isLoading = useSelector((state) => state.ui.isLoading);
+
   const [showAddIssue, setShowAddIssue] = useState(false);
 
   useLayoutEffect(() => {
@@ -37,6 +41,7 @@ const Teams = ({ navigation }) => {
       ),
     });
     dispatch(getAllTeams());
+    dispatch(getUsers());
   }, []);
 
   const logoutHandler = () => {
@@ -65,21 +70,25 @@ const Teams = ({ navigation }) => {
         navigation={navigation}
       />
       <Text style={styles.headerText}>All teams</Text>
-      <ScrollView>
-        {teams.length > 0 ? (
-          teams.map((data, index) => (
-            <TeamCard
-              key={index}
-              teamName={data.name}
-              teamDesc={data.description}
-              teamKey={data.signature}
-              onPress={() => teamTasksHandler(data)}
-            />
-          ))
-        ) : (
-          <Text style={styles.noTeam}>No teams exist!</Text>
-        )}
-      </ScrollView>
+      {isLoading ? (
+        <Indicator />
+      ) : (
+        <ScrollView>
+          {teams.length > 0 ? (
+            teams.map((data, index) => (
+              <TeamCard
+                key={index}
+                teamName={data.name}
+                teamDesc={data.description}
+                teamKey={data.signature}
+                onPress={() => teamTasksHandler(data)}
+              />
+            ))
+          ) : (
+            <Text style={styles.noTeam}>No teams exist!</Text>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -108,7 +117,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginTop: 48,
-  }
+  },
 });
 
 export default Teams;

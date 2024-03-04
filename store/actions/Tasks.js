@@ -148,6 +148,7 @@ export const editTask = (teamId, newTaskData) => async (dispatch) => {
     return true;
   } catch (err) {
     console.log("addNewUser ERROR ==>", err.response.data.code);
+    console.log("addNewUser ERROR ==>", err);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -169,16 +170,17 @@ export const deleteTask = (teamId, taskId) => async (dispatch) => {
   }
 }
 
-export const addMembers = (id, members) => async (dispatch) => {
+export const addMembers = (teamId, members) => async (dispatch) => {
   try {
     dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
     await axios({
       method: "POST",
-      url: baseUrl + `/team/member/${id}`,
+      url: baseUrl + `/team/member/${teamId}`,
       data: members,
       headers
     });
+    dispatch(getTeamDetails(teamId));
     return true;
   } catch (error) {
     console.log("getUsers ERROR ==>", error.response.data.code);

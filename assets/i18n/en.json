@@ -1,4 +1,11 @@
 {
   "copyright": "® All Rights Reserved",
-  "welcomeBack": "Welcome back!"
+  "welcomeBack": "Welcome back!",
+  "enterYourDetails": "Please enter your details",
+  "loginFail": "Invalid Email or Password!",
+  "yourDeactivate": "Your Account is Deactivated!",
+  "rememberMe": "Remember me",
+  "logIn": "Log In",
+  "email": "Email Address",
+  "password": "Password"
 }

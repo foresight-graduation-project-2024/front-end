@@ -22,6 +22,7 @@ export const getUsers = () => async (dispatch) => {
     dispatch(setUsers(response.data || []));
   } catch (error) {
     console.log("getUsers ERROR ==>", error);
+    console.log("getUsers ERROR ==>", error.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -81,6 +82,7 @@ export const deactivateUser = (id) => async (dispatch) => {
     dispatch(getUsers());
   } catch (err) {
     console.log("DeactivateUser ERROR ==>", err);
+    console.log("DeactivateUser ERROR ==>", err.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -98,6 +100,7 @@ export const activateUser = (id) => async (dispatch) => {
     dispatch(getUsers());
   } catch (err) {
     console.log("ActivateUser ERROR ==>", err);
+    console.log("ActivateUser ERROR ==>", err.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -116,6 +119,7 @@ export const changePassword = (id, newPassword) => async (dispatch) => {
     return true;
   } catch (err) {
     console.log("changePassword ERROR ==>", err);
+    console.log("changePassword ERROR ==>", err.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -136,6 +140,49 @@ export const userSearch = (keyword) => async (dispatch) => {
     dispatch(setUsers(response.data.content || []));
   } catch (error) {
     console.log("userSearch ERROR ==>", error);
+    console.log("userSearch ERROR ==>", error.response.data.code);
+  } finally {
+    dispatch(uiStopLoading());
+  }
+}
+
+export const getUserTeamsAndTasks = (userId) => async (dispatch) => {
+  try {
+    dispatch(uiStartLoading());
+    const headers = await dispatch(getCurToken());
+    const response = await axios.get(`${baseUrl}/user/${userId}`, { headers });
+    return response.data;
+  } catch (error) {
+    console.log("getUserTeamsAndTasks ERROR ==>", error);
+    console.log("getUserTeamsAndTasks ERROR ==>", error.response.data.code);
+  } finally {
+    dispatch(uiStopLoading());
+  }
+}
+
+export const getUserTeams = (userId) => async (dispatch) => {
+  try {
+    dispatch(uiStartLoading());
+    const headers = await dispatch(getCurToken());
+    const response = await axios.get(`${baseUrl}/user/teams/${userId}`, { headers });
+    return response.data.content;
+  } catch (error) {
+    console.log("getUserTeams ERROR ==>", error);
+    console.log("getUserTeams ERROR ==>", error.response.data.code);
+  } finally {
+    dispatch(uiStopLoading());
+  }
+}
+
+export const getUserTasks = (userId) => async (dispatch) => {
+  try {
+    dispatch(uiStartLoading());
+    const headers = await dispatch(getCurToken());
+    const response = await axios.get(`${baseUrl}/user/tasks/${userId}`, { headers });
+    return response.data.content;
+  } catch (error) {
+    console.log("getUserTasks ERROR ==>", error);
+    console.log("getUserTasks ERROR ==>", error.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }

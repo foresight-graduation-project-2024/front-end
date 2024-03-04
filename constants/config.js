@@ -1,9 +1,6 @@
 const HOST = '192.168.1.15'
 export const baseUrl = `http://${HOST}:8082`;
 
-export const emailRegex = /@foresight\.com$/;
-export const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]+$/;
-
 export const PRIORITY = [ "LOW", "NORMAL", "HIGH" ];
 export const STATUS = ["WAITING","ASSIGNED", "IN_PROGRESS", "FINISHED"];
 

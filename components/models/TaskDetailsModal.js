@@ -16,14 +16,16 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { Colors, PRIORITY, STATUS } from "../../constants/config";
 import ConfirmModal from "./ConfirmModal";
-import { deleteTask } from "../../store/actions/Tasks";
+import { deleteTask, editTask } from "../../store/actions/Tasks";
 import Dropdown from "../custom/Dropdown";
 import Button from "../custom/Button";
 import DotPulse from "../custom/DotPulse";
+import { createUserObject, timeFormat } from "../../constants/Utility";
 
 const TaskDetailsModal = (props) => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.ui.isLoading);
+  const users = useSelector((state) => state.user.users);
 
   const initialDropdownState = {
     status: { isVisible: false, selected: STATUS[0] || "" },
@@ -40,20 +42,17 @@ const TaskDetailsModal = (props) => {
   const [newTaskDesc, setNewTaskDesc] = useState("");
   const [selectedAssignee, setSelectedAssignee] = useState("");
 
+  const assigneeMembers = props.allMembers?.map((item) => ({
+    key: item.memberId,
+    value: `${item.email}`,
+  }));
+
   const startDateFormat = startTime
-    ? `${String(startTime.getDate()).padStart(2, "0")}-${String(
-        startTime.getMonth() + 1
-      ).padStart(2, "0")}-${startTime.getFullYear()}, ${String(
-        startTime.getHours()
-      ).padStart(2, "0")}:${String(startTime.getMinutes()).padStart(2, "0")}`
+    ? timeFormat(startTime)
     : props.taskDetails?.startDate.replace("T", ", ");
 
   const endDateFormat = endTime
-    ? `${String(endTime.getDate()).padStart(2, "0")}-${String(
-        endTime.getMonth() + 1
-      ).padStart(2, "0")}-${endTime.getFullYear()}, ${String(
-        endTime.getHours()
-      ).padStart(2, "0")}:${String(endTime.getMinutes()).padStart(2, "0")}`
+    ? timeFormat(endTime)
     : props.taskDetails?.endDate.replace("T", ", ");
 
   const showDatePicker = () => {
@@ -112,6 +111,31 @@ const TaskDetailsModal = (props) => {
       closeDeleteModal();
       props.closeModal();
     }
+  };
+
+  const editTaskHandler = async () => {
+    const taskInfo = props.taskDetails;
+    let assigneeUser = users.filter((user) => user.email === selectedAssignee);
+    assigneeUser =
+      Array.isArray(assigneeUser) && assigneeUser.length > 0
+        ? createUserObject(assigneeUser[0])
+        : null;
+
+    const taskData = {
+      taskId: taskInfo.taskId,
+      teamId: taskInfo.teamId,
+      title: taskInfo.title,
+      summary: newTaskSummary || taskInfo.summary,
+      description: newTaskDesc || taskInfo.description,
+      status: dropdowns.status.selected,
+      priority: dropdowns.priority.selected,
+      startDate: startTime?.toISOString() || taskInfo.startDate,
+      endDate: endTime?.toISOString() || taskInfo.endDate,
+      assignee: assigneeUser,
+    };
+    console.log(taskData);
+    const resp = await dispatch(editTask(taskInfo.teamId, taskData));
+    resp && props.closeModal();
   };
 
   // console.log(props.taskDetails);
@@ -192,7 +216,7 @@ const TaskDetailsModal = (props) => {
             <SelectList
               save="value"
               placeholder="Select Assignee "
-              data={props.allMembers}
+              data={assigneeMembers}
               setSelected={onSelectedAssignee}
               defaultOption={{
                 key: props.taskDetails?.assignee?.memberId || null,
@@ -200,12 +224,9 @@ const TaskDetailsModal = (props) => {
               }}
             />
 
-            {/* TODO: make start and end times can be edit with icons */}
             <Text style={styles.desc}>Start date:</Text>
             <View style={styles.timeContent}>
-              <Text style={styles.descValue}>
-                {startDateFormat}
-              </Text>
+              <Text style={styles.descValue}>{startDateFormat}</Text>
               <TouchableOpacity onPress={showDatePicker}>
                 <Image
                   source={require("../../assets/calendar.png")}
@@ -222,9 +243,7 @@ const TaskDetailsModal = (props) => {
 
             <Text style={styles.desc}>End date:</Text>
             <View style={styles.timeContent}>
-              <Text style={styles.descValue}>
-                {endDateFormat}
-              </Text>
+              <Text style={styles.descValue}>{endDateFormat}</Text>
               <TouchableOpacity onPress={showEndDatePicker}>
                 <Image
                   source={require("../../assets/calendar.png")}
@@ -239,12 +258,12 @@ const TaskDetailsModal = (props) => {
               onCancel={hideEndDatePicker}
             />
 
-            <Text style={styles.desc}>Comments:</Text>
+            {/* <Text style={styles.desc}>Comments:</Text> */}
           </View>
         </ScrollView>
         <View style={styles.buttons}>
           <Button
-            // onPress={addTaskHandler}
+            onPress={editTaskHandler}
             btnStyle={[styles.btnStyle, styles.activeBtnStyle]}
           >
             {isLoading ? <DotPulse /> : "Save"}
@@ -295,13 +314,13 @@ const styles = StyleSheet.create({
     height: 20,
   },
   taskNum: {
-    marginVertical: 12,
+    marginVertical: 8,
     fontSize: 12,
   },
   taskSummary: {
     fontSize: 16,
     fontWeight: "600",
-    marginBottom: 12,
+    marginBottom: 8,
   },
   desc: {
     fontWeight: "bold",
@@ -312,7 +331,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: -2
+    marginTop: -4,
   },
   descContent: {
     justifyContent: "center",

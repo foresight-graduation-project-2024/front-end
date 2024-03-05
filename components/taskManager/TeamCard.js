@@ -3,7 +3,9 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 
 const TeamCard = (props) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={props.onPress}>
+    <TouchableOpacity style={[styles.container, {
+      flexDirection: props.hideIcon ? "row-reverse" : "row",
+    }]} onPress={props.onPress}>
       <Text>{props.teamKey}</Text>
       <View style={styles.teamDetails}>
         <Text style={styles.teamName}>{props.teamName}</Text>
@@ -13,10 +15,12 @@ const TeamCard = (props) => {
             : props.teamDesc}
         </Text>
       </View>
-      <Image
-        source={require("../../assets/chevron_left.png")}
-        style={styles.icon}
-      />
+      {!props.hideIcon && (
+        <Image
+          source={require("../../assets/chevron_left.png")}
+          style={styles.icon}
+        />
+      )}
     </TouchableOpacity>
   );
 };

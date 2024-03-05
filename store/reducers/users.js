@@ -19,7 +19,7 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         emailExist: action.payload,
-      }
+      };
     case USER_SAVE:
       return {
         ...state,

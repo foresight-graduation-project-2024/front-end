@@ -23,10 +23,11 @@ const { width, height } = Dimensions.get("window");
 
 const Manager = ({ navigation }) => {
   const dispatch = useDispatch();
+
   let users = useSelector((state) => state.user.users);
   const isLoading = useSelector((state) => state.ui.isLoading);
 
-  const [taskTypeFilter, setTaskTypeFilter] = useState("ALL");
+  // const [taskTypeFilter, setTaskTypeFilter] = useState("ALL");
 
   users = users?.filter((user) => user.role !== "ADMIN");
 
@@ -54,18 +55,21 @@ const Manager = ({ navigation }) => {
   };
 
   const navToUserDetails = async (user) => {
-    console.log("User id =>", user.id);
-    const userTeams = await dispatch(getUserTeams(user.id));
-    const userTasks = await dispatch(getUserTasks(user.id));
+    const clickedUser = users?.filter((u) => u.id === user.id);
+    const userTeams =
+      clickedUser[0].role !== "TECHNICAL_MANAGER"
+        ? await dispatch(getUserTeams(user.id))
+        : [];
+    const userTasks =
+      clickedUser[0].role !== "TECHNICAL_MANAGER"
+        ? await dispatch(getUserTasks(user.id))
+        : [];
 
-    console.log("userTeams ==>", userTeams);
-    console.log("userTasks ==>", userTasks);
-
-    // navigation.navigate("UserDetails", {
-    //   user,
-    //   userTeams,
-    //   userTasks
-    // });
+    navigation.navigate("UserDetails", {
+      user,
+      userTeams,
+      userTasks,
+    });
   };
 
   const navToAddEditUser = () => {
@@ -131,28 +135,27 @@ const Manager = ({ navigation }) => {
       ) : (
         <ScrollView>
           {users.length > 0 ? (
-            users
-              ?.map((user) => (
-                <TouchableOpacity
-                  key={user.id}
-                  style={[
-                    styles.userContainer,
-                    {
-                      backgroundColor: user.enabled
-                        ? Colors.white
-                        : Colors.dammed,
-                    },
-                  ]}
-                  onPress={() => navToUserDetails(user)}
-                >
-                  <View>
-                    <Text style={styles.nameTitle}>
-                      {user.firstname} {user.lastname}
-                    </Text>
-                  </View>
-                  <Text style={styles.roleTitle}>{user.role}</Text>
-                </TouchableOpacity>
-              ))
+            users?.map((user) => (
+              <TouchableOpacity
+                key={user.id}
+                style={[
+                  styles.userContainer,
+                  {
+                    backgroundColor: user.enabled
+                      ? Colors.white
+                      : Colors.dammed,
+                  },
+                ]}
+                onPress={() => navToUserDetails(user)}
+              >
+                <View>
+                  <Text style={styles.nameTitle}>
+                    {user.firstname} {user.lastname}
+                  </Text>
+                </View>
+                <Text style={styles.roleTitle}>{user.role}</Text>
+              </TouchableOpacity>
+            ))
           ) : (
             <Text style={styles.noUser}>No user exist!</Text>
           )}
@@ -262,7 +265,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginTop: 48,
-  }
+  },
 });
 
 export default Manager;

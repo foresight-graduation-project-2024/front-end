@@ -13,7 +13,7 @@ export const getAllTeams = () => async (dispatch) => {
     // console.log("Get all teams ==>", response.data.content)
     dispatch(setTeams(response.data.content || []));
   } catch (error) {
-    console.log("getUsers ERROR ==>", error.response.data.code);
+    console.log("getAllTeams ERROR ==>", error.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -46,8 +46,8 @@ export const addTeam = (teamData) => async (dispatch) => {
     dispatch(getAllTeams());
     return true;
   } catch (err) {
-    console.log("addNewUser ERROR ==>", err.response.data.code);
-    console.log("addNewUser ERROR ==>", err);
+    console.log("addTeam ERROR ==>", err.response.data.code);
+    console.log("addTeam ERROR ==>", err);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -66,8 +66,8 @@ export const editTeamDetails = (newTeamData) => async (dispatch) => {
     dispatch(getAllTeams());
     return true;
   } catch (err) {
-    console.log("editUserDetails ERROR ==>", err.response.data.code);
-    console.log("editUserDetails ERROR ==>", err);
+    console.log("editTeamDetails ERROR ==>", err.response.data.code);
+    console.log("editTeamDetails ERROR ==>", err);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -95,7 +95,7 @@ export const getAllTasks = () => async (dispatch) => {
     // console.log("Get all tasks ==> ", response.data.content);
     dispatch(setTasks(response.data.content || []));
   } catch (error) {
-    console.log("getUsers ERROR ==>", error.response.data.code);
+    console.log("getAllTasks ERROR ==>", error.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -113,8 +113,8 @@ export const addTask = (teamId, taskData) => async (dispatch) => {
     });
     return true;
   } catch (err) {
-    console.log("addNewUser ERROR ==>", err.response.data.code);
-    // console.log("addNewUser ERROR ==>", err);
+    console.log("addTask ERROR ==>", err.response.data.code);
+    // console.log("addTask ERROR ==>", err);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -147,8 +147,8 @@ export const editTask = (teamId, newTaskData) => async (dispatch) => {
     dispatch(getAllTasks());
     return true;
   } catch (err) {
-    console.log("addNewUser ERROR ==>", err.response.data.code);
-    console.log("addNewUser ERROR ==>", err);
+    console.log("editTask ERROR ==>", err.response.data.code);
+    console.log("editTask ERROR ==>", err);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -183,7 +183,7 @@ export const addMembers = (teamId, members) => async (dispatch) => {
     dispatch(getTeamDetails(teamId));
     return true;
   } catch (error) {
-    console.log("getUsers ERROR ==>", error.response.data.code);
+    console.log("addMembers ERROR ==>", error.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -216,7 +216,7 @@ export const addComment = (taskId, commentDetails) => async (dispatch) => {
     dispatch(getAllTasks());
     return true;
   } catch (err) {
-    console.log("addNewUser ERROR ==>", err.response.data.code);
+    console.log("addComment ERROR ==>", err.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }

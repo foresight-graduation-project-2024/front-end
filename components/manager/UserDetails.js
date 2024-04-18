@@ -100,6 +100,7 @@ const UserDetails = ({ route, navigation }) => {
                 userTasks.map((data, index) => (
                   <IssueCard
                     key={index}
+                    hideIcon={true}
                     issueKey={data.title}
                     summary={data.summary}
                   />

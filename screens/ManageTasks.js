@@ -135,6 +135,7 @@ const ManageTasks = ({ navigation, route }) => {
         closeModal={closeTaskDetailsHandler}
         taskDetails={taskDetails}
         allMembers={allMembers}
+        navigation={navigation}
       />
       <MembersModal
         showModal={showMemberModal}
@@ -142,6 +143,7 @@ const ManageTasks = ({ navigation, route }) => {
         allMembers={allMembers}
         teamId={data.teamId}
         teamLeader={data.teamLeader.email}
+        navigation={navigation}
       />
 
       {user.role === "TECHNICAL_MANAGER" && (

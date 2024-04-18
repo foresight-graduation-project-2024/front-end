@@ -1,4 +1,4 @@
-const HOST = '192.168.1.15'
+const HOST = "192.168.1.15";
 export const baseUrl = `http://${HOST}:8082`;
 
 export const PRIORITY = [ "LOW", "NORMAL", "HIGH" ];

@@ -55,7 +55,7 @@ const MembersModal = (props) => {
     );
     const members = selectedUsers.map(createUserObject);
     const resp = await dispatch(addMembers(props.teamId, members))
-    resp && props.closeModal();
+    resp && props.navigation.goBack();
   };
 
   const deleteMemberHandler = async () => {

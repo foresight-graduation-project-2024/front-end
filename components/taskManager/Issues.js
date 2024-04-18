@@ -9,11 +9,17 @@ import IssueCard from "./IssueCard";
 import { getAllTasks, getTaskDetails } from "../../store/actions/Tasks";
 import Indicator from "./../custom/Indicator";
 import TaskDetailsModal from "../models/TaskDetailsModal";
+import { getUserTasks } from "../../store/actions/Users";
 
 const Issues = ({ navigation }) => {
   const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.user.user);
   const allTasks = useSelector((state) => state.tasks.allTasks);
   const isLoading = useSelector((state) => state.ui.isLoading);
+
+  // const userTasks = dispatch(getUserTasks(user.id));
+  // const curTasks = user.role === "TECHNICAL_MANAGER" ? allTasks : userTasks;
 
   const [showTaskDetails, setShowTaskDetails] = useState(false);
   const [taskDetails, setTaskDetails] = useState();
@@ -31,7 +37,7 @@ const Issues = ({ navigation }) => {
         </View>
       ),
     });
-    dispatch(getAllTasks());
+    user.role === "TECHNICAL_MANAGER" && dispatch(getAllTasks());
   }, []);
 
   const logoutHandler = () => {
@@ -45,15 +51,15 @@ const Issues = ({ navigation }) => {
       setTaskDetails(taskData);
       setShowTaskDetails(true);
     }
-  }
+  };
 
   const closeTaskDetailsHandler = () => {
     setShowTaskDetails(false);
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <TaskDetailsModal 
+      <TaskDetailsModal
         showModal={showTaskDetails}
         closeModal={closeTaskDetailsHandler}
         taskDetails={taskDetails}
@@ -70,7 +76,9 @@ const Issues = ({ navigation }) => {
                 key={index}
                 issueKey={data.title}
                 summary={data.summary}
-                onPress={() => { showTaskDetailsHandler(data) }}
+                onPress={() => {
+                  showTaskDetailsHandler(data);
+                }}
               />
             ))
           ) : (

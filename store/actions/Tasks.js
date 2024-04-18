@@ -111,6 +111,7 @@ export const addTask = (teamId, taskData) => async (dispatch) => {
       data: taskData,
       headers
     });
+    // dispatch(getTeamDetails(teamId));
     return true;
   } catch (err) {
     console.log("addTask ERROR ==>", err.response.data.code);
@@ -144,7 +145,7 @@ export const editTask = (teamId, newTaskData) => async (dispatch) => {
       data: newTaskData,
       headers
     });
-    dispatch(getAllTasks());
+    // dispatch(getTeamDetails(teamId));
     return true;
   } catch (err) {
     console.log("editTask ERROR ==>", err.response.data.code);

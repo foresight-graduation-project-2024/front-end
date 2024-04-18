@@ -3,17 +3,27 @@ import { StyleSheet, Text, Image, TouchableOpacity } from "react-native";
 
 const IssueCard = (props) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={props.onPress}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        {
+          flexDirection: props.hideIcon ? "row-reverse" : "row",
+        },
+      ]}
+      onPress={props.onPress}
+    >
       <Text style={styles.issueNum}>{props.issueKey}</Text>
       <Text>
         {props.summary.length > 30
           ? props.summary.substring(0, 30) + " ..."
           : props.summary}
       </Text>
-      <Image
-        source={require("../../assets/chevron_left.png")}
-        style={styles.icon}
-      />
+      {!props.hideIcon && (
+        <Image
+          source={require("../../assets/chevron_left.png")}
+          style={styles.icon}
+        />
+      )}
     </TouchableOpacity>
   );
 };
@@ -22,7 +32,6 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignSelf: "center",
-    flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginVertical: 10,

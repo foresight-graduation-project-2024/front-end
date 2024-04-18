@@ -135,7 +135,7 @@ const TaskDetailsModal = (props) => {
     };
     console.log(taskData);
     const resp = await dispatch(editTask(taskInfo.teamId, taskData));
-    resp && props.closeModal();
+    resp && props.navigation.goBack();
   };
 
   // console.log(props.taskDetails);
@@ -212,6 +212,7 @@ const TaskDetailsModal = (props) => {
               />
             </View>
 
+            {/* TODO: show for team leader only => to get it compare between curUser.email and team.teamLeader.email */}
             <Text style={[styles.desc, { marginBottom: 6 }]}>Assignee:</Text>
             <SelectList
               save="value"

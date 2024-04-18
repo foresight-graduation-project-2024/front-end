@@ -65,6 +65,8 @@ const Manager = ({ navigation }) => {
         ? await dispatch(getUserTasks(user.id))
         : [];
 
+    // console.log(userTasks);
+
     navigation.navigate("UserDetails", {
       user,
       userTeams,

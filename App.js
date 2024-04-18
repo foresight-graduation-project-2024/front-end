@@ -95,7 +95,6 @@ export default function App() {
           <Stack.Screen
             name="Manager"
             component={Manager}
-            // options={{ headerShown: false }}
           />
           <Stack.Screen name="AddEditUser" component={AddEditUser} />
           <Stack.Screen name="UserDetails" component={UserDetails} />

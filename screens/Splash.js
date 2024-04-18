@@ -8,7 +8,6 @@ import { Colors } from "../constants/config";
 import { getUserInfo } from "../store/actions/Authentication";
 import Indicator from "../components/custom/Indicator";
 
-
 const Splash = ({ navigation }) => {
   const dispatch = useDispatch();
 

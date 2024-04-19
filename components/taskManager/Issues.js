@@ -92,10 +92,7 @@ const Issues = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   navIcon: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 16,
-    marginLeft: 12,
+    marginRight: 12,
   },
   container: {
     flex: 1,

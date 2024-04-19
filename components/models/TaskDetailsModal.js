@@ -110,6 +110,7 @@ const TaskDetailsModal = (props) => {
     if (resp) {
       closeDeleteModal();
       props.closeModal();
+      props.navigation.goBack();
     }
   };
 
@@ -133,9 +134,11 @@ const TaskDetailsModal = (props) => {
       endDate: endTime?.toISOString() || taskInfo.endDate,
       assignee: assigneeUser,
     };
-    console.log(taskData);
     const resp = await dispatch(editTask(taskInfo.teamId, taskData));
-    resp && props.navigation.goBack();
+    if (resp) {
+      props.closeModal();
+      props.navigation.goBack();
+    }
   };
 
   // console.log(props.taskDetails);

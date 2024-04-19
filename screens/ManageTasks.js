@@ -13,16 +13,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 
 import { Colors, STATUS } from "../constants/config";
-import {
-  deleteTeam,
-  getTaskDetails,
-} from "../store/actions/Tasks";
+import { deleteTeam, getTaskDetails } from "../store/actions/Tasks";
 import TaskCard from "../components/taskManager/TaskCard";
 import AddTaskModal from "../components/models/AddTaskModal";
 import AddEditTeamModal from "../components/models/AddEditTeamModal";
 import ConfirmModal from "../components/models/ConfirmModal";
 import TaskDetailsModal from "../components/models/TaskDetailsModal";
 import MembersModal from "../components/models/MembersModal";
+import WebSocketComponent from "../components/notification/WebSocketComponent";
 
 const { width } = Dimensions.get("window");
 
@@ -145,6 +143,8 @@ const ManageTasks = ({ navigation, route }) => {
         teamLeader={data.teamLeader.email}
         navigation={navigation}
       />
+
+      <WebSocketComponent userId={user.id} />
 
       {user.role === "TECHNICAL_MANAGER" && (
         <View style={styles.membersContent}>

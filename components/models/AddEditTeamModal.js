@@ -42,7 +42,7 @@ const AddEditTeamModal = (props) => {
       value: `${item.email}`,
     }));
   const membersData = teamLeaderData.filter(
-    (user) => user.value !== selectedTeamLeader
+    (user) => user.key != selectedTeamLeader
   );
 
   const addTeamHandler = async () => {
@@ -84,6 +84,7 @@ const AddEditTeamModal = (props) => {
       name: teamDetails.teamName,
       description: teamDetails.teamDesc,
       teamLeader: teamLeader ? teamLeader : props.team?.teamLeader,
+      members: membersData,
     };
     const resp = await dispatch(editTeamDetails(teamData));
     resp && props.navigation.goBack();

@@ -22,7 +22,7 @@ export const getUsers = () => async (dispatch) => {
     dispatch(setUsers(response.data || []));
   } catch (error) {
     console.log("getUsers ERROR ==>", error);
-    console.log("getUsers ERROR ==>", error.response.data.code);
+    console.log("getUsers ERROR CODE ==>", error.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -43,7 +43,7 @@ export const addNewUser = (userData) => async (dispatch) => {
   } catch (err) {
     if (err.response.data.code === 2) {
       dispatch(emailExist(true));
-    } else console.log("addNewUser ERROR ==>", err.response.data.code);
+    } else console.log("addNewUser ERROR CODE ==>", err.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -82,7 +82,7 @@ export const deactivateUser = (id) => async (dispatch) => {
     dispatch(getUsers());
   } catch (err) {
     console.log("DeactivateUser ERROR ==>", err);
-    console.log("DeactivateUser ERROR ==>", err.response.data.code);
+    console.log("DeactivateUser ERROR CODE ==>", err.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -100,7 +100,7 @@ export const activateUser = (id) => async (dispatch) => {
     dispatch(getUsers());
   } catch (err) {
     console.log("ActivateUser ERROR ==>", err);
-    console.log("ActivateUser ERROR ==>", err.response.data.code);
+    console.log("ActivateUser ERROR CODE ==>", err.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -119,7 +119,7 @@ export const changePassword = (id, newPassword) => async (dispatch) => {
     return true;
   } catch (err) {
     console.log("changePassword ERROR ==>", err);
-    console.log("changePassword ERROR ==>", err.response.data.code);
+    console.log("changePassword ERROR CODE ==>", err.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -140,7 +140,7 @@ export const userSearch = (keyword) => async (dispatch) => {
     dispatch(setUsers(response.data.content || []));
   } catch (error) {
     console.log("userSearch ERROR ==>", error);
-    console.log("userSearch ERROR ==>", error.response.data.code);
+    console.log("userSearch ERROR CODE ==>", error.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -154,7 +154,7 @@ export const getUserTeamsAndTasks = (userId) => async (dispatch) => {
     return response.data;
   } catch (error) {
     console.log("getUserTeamsAndTasks ERROR ==>", error);
-    console.log("getUserTeamsAndTasks ERROR ==>", error.response.data.code);
+    console.log("getUserTeamsAndTasks ERROR CODE ==>", error.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -168,7 +168,7 @@ export const getUserTeams = (userId) => async (dispatch) => {
     return response.data.content;
   } catch (error) {
     console.log("getUserTeams ERROR ==>", error);
-    console.log("getUserTeams ERROR ==>", error.response.data.code);
+    console.log("getUserTeams ERROR CODE ==>", error.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }
@@ -182,7 +182,7 @@ export const getUserTasks = (userId) => async (dispatch) => {
     return response.data.content;
   } catch (error) {
     console.log("getUserTasks ERROR ==>", error);
-    console.log("getUserTasks ERROR ==>", error.response.data.code);
+    console.log("getUserTasks ERROR CODE ==>", error.response.data.code);
   } finally {
     dispatch(uiStopLoading());
   }

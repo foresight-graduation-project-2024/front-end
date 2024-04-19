@@ -15,3 +15,5 @@ export const GET_TASKS = "GET_TASKS";
 
 export const GET_USER_TEAMS = "GET_USER_TEAMS";
 export const GET_USER_TASKS = "GET_USER_TASKS";
+
+export const SET_NOTIFICATION = "SET_NOTIFICATION";

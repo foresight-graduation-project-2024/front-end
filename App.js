@@ -16,6 +16,7 @@ import ManageTasks from "./screens/ManageTasks";
 import Teams from "./components/taskManager/Teams";
 import Issues from "./components/taskManager/Issues";
 import Splash from "./screens/Splash";
+import Notification from "./screens/Notification";
 
 const Stack = createNativeStackNavigator();
 const bottomTab = createBottomTabNavigator();
@@ -60,7 +61,7 @@ function TasksOverview({}) {
       />
       <bottomTab.Screen
         name="Notifications"
-        component={Issues}
+        component={Notification}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="notifications" color={color} size={size} />

@@ -34,7 +34,7 @@ const MembersModal = (props) => {
       value: `${item.email}`,
     }));
   const membersData = teamLeaderData.filter(
-    (user) => user.value !== props.allMembers?.map((member) => member.email)
+    (user) => user.value != props.allMembers?.map((member) => member.email)
   );
 
   const onSelectedMembers = (selectedUsers) => {

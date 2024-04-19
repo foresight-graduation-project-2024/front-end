@@ -79,7 +79,7 @@ const UserDetails = ({ route, navigation }) => {
           <>
             <Text style={styles.header}>His teams:</Text>
             <ScrollView>
-              {userTeams.length > 0 ? (
+              {userTeams && userTeams.length > 0 ? (
                 userTeams.map((data, index) => (
                   <TeamCard
                     key={index}
@@ -96,7 +96,7 @@ const UserDetails = ({ route, navigation }) => {
 
             <Text style={styles.header}>His tasks:</Text>
             <ScrollView>
-              {userTasks.length > 0 ? (
+              {userTasks && userTasks.length > 0 ? (
                 userTasks.map((data, index) => (
                   <IssueCard
                     key={index}

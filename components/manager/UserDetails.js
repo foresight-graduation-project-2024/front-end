@@ -47,9 +47,6 @@ const UserDetails = ({ route, navigation }) => {
     setShowChangePassword((prev) => !prev);
   };
 
-  // console.log(allUserTeams);
-  // console.log(allUserTasks);
-
   return (
     <View style={styles.container}>
       <DeActivateUserModal

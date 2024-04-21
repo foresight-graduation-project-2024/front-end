@@ -165,6 +165,7 @@ export const getUserTeams = (userId) => async (dispatch) => {
     dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
     const response = await axios.get(`${baseUrl}/user/teams/${userId}`, { headers });
+    dispatch(setUserTeams(response.data.content || []));
     return response.data.content;
   } catch (error) {
     console.log("getUserTeams ERROR ==>", error);
@@ -179,6 +180,7 @@ export const getUserTasks = (userId) => async (dispatch) => {
     dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
     const response = await axios.get(`${baseUrl}/user/tasks/${userId}`, { headers });
+    dispatch(setUserTasks(response.data.content || []));
     return response.data.content;
   } catch (error) {
     console.log("getUserTasks ERROR ==>", error);
@@ -199,3 +201,13 @@ export const emailExist = (payload) => {
     payload,
   };
 };
+
+const setUserTeams = (payload) => ({
+  type: actions.GET_USER_TEAMS,
+  payload,
+});
+
+const setUserTasks = (payload) => ({
+  type: actions.GET_USER_TASKS,
+  payload,
+});

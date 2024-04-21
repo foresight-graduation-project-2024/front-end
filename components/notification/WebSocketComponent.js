@@ -15,12 +15,12 @@ const WebSocketComponent = ({userId}) => {
     });
 
     stompClient.connect({}, () => {
-      console.log("Connected to WebSocket");
+      // console.log("Connected to WebSocket");
 
       stompClient.subscribe(
         `/user/${userId}/topic/private-notifications`,
         (message) => {
-          console.log("Received message:", JSON.parse(message.body));
+          // console.log("Received message:", JSON.parse(message.body));
           const newMessage = JSON.parse(message.body).content;
 
           // Update local state to display messages
@@ -32,12 +32,12 @@ const WebSocketComponent = ({userId}) => {
     return () => {
       if (stompClient) {
         stompClient.disconnect();
-        console.log("Disconnected");
+        // console.log("Disconnected");
       }
     };
   }, []);
 
-  console.log("Messages =>", messages);
+  // console.log("Messages =>", messages);
 
   return (
     <ScrollView>

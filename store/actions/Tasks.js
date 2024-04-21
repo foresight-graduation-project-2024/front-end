@@ -199,7 +199,7 @@ export const deleteMember = (teamId, memberId) => async (dispatch) => {
     return true;
   } catch (error) {
     console.log("deleteMember ERROR CODE ==>", error.response.data.code);
-    // if code is equal 11 show message the members can't be little than 1
+    // TODO if code is equal '11' show message the members can't be little than 1
   } finally {
     dispatch(uiStopLoading());
   }

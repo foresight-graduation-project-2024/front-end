@@ -17,7 +17,7 @@ import Search from "../components/custom/Search";
 import { getUserTasks, getUserTeams, getUsers } from "../store/actions/Users";
 import Indicator from "./../components/custom/Indicator";
 import { authLogout } from "../store/actions/Authentication";
-import ListFilter from "../components/taskManager/ListFilter";
+// import ListFilter from "../components/taskManager/ListFilter";
 
 const { width, height } = Dimensions.get("window");
 
@@ -64,8 +64,6 @@ const Manager = ({ navigation }) => {
       clickedUser[0].role !== "TECHNICAL_MANAGER"
         ? await dispatch(getUserTasks(user.id))
         : [];
-
-    // console.log(userTasks);
 
     navigation.navigate("UserDetails", {
       user,

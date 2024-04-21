@@ -169,7 +169,6 @@ const TaskDetailsModal = (props) => {
               />
             </View>
 
-            {/* TODO: make title and description can be edit */}
             <Text style={styles.taskNum}>{props.taskDetails?.title}</Text>
             <TextInput
               style={styles.taskSummary}

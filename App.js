@@ -3,7 +3,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Provider } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
 import Login from "./screens/Login";
@@ -22,8 +21,6 @@ const Stack = createNativeStackNavigator();
 const bottomTab = createBottomTabNavigator();
 
 function TasksOverview({}) {
-  const navigation = useNavigation();
-
   return (
     <bottomTab.Navigator
       screenOptions={{

@@ -2,10 +2,14 @@ import React from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 
 const TeamCard = (props) => {
+  // console.log("Sig =>", props.teamKey)
   return (
-    <TouchableOpacity style={[styles.container, {
-      flexDirection: props.hideIcon ? "row-reverse" : "row",
-    }]} onPress={props.onPress}>
+    <TouchableOpacity 
+      style={[styles.container, {
+        flexDirection: props.hideIcon ? "row-reverse" : "row",
+      }]} 
+      onPress={props.onPress}
+    >
       <Text>{props.teamKey}</Text>
       <View style={styles.teamDetails}>
         <Text style={styles.teamName}>{props.teamName}</Text>

@@ -1,4 +1,4 @@
-import { GET_USERS, USER_SAVE, EMAIL_EXIST } from "../actions/actionTypes";
+import { GET_USERS, USER_SAVE, EMAIL_EXIST, GET_USER_TEAMS, GET_USER_TASKS } from "../actions/actionTypes";
 
 const initialState = {
   user: {
@@ -11,6 +11,8 @@ const initialState = {
   },
   users: [],
   emailExist: false,
+  userTeams: [],
+  userTasks: [],
 };
 
 const userReducer = (state = initialState, action) => {
@@ -32,6 +34,16 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         users: action.payload,
+      };
+    case GET_USER_TEAMS:
+      return {
+        ...state,
+        userTeams: action.payload,
+      };
+    case GET_USER_TASKS:
+      return {
+        ...state,
+        userTasks: action.payload,
       };
     default:
       return state;

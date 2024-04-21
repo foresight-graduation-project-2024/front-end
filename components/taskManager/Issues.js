@@ -15,11 +15,10 @@ const Issues = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user.user);
-  const allTasks = useSelector((state) => state.tasks.allTasks);
+  const allTasks = user.role === "TECHNICAL_MANAGER" 
+    ? useSelector((state) => state.tasks.allTasks) 
+    : useSelector((state) => state.user.userTasks);
   const isLoading = useSelector((state) => state.ui.isLoading);
-
-  // const userTasks = dispatch(getUserTasks(user.id));
-  // const curTasks = user.role === "TECHNICAL_MANAGER" ? allTasks : userTasks;
 
   const [showTaskDetails, setShowTaskDetails] = useState(false);
   const [taskDetails, setTaskDetails] = useState();
@@ -37,7 +36,9 @@ const Issues = ({ navigation }) => {
         </View>
       ),
     });
-    user.role === "TECHNICAL_MANAGER" && dispatch(getAllTasks());
+    user.role === "TECHNICAL_MANAGER" 
+      ? dispatch(getAllTasks()) 
+      : dispatch(getUserTasks(user.id));
   }, []);
 
   const logoutHandler = () => {
@@ -70,7 +71,7 @@ const Issues = ({ navigation }) => {
         <Indicator />
       ) : (
         <ScrollView>
-          {allTasks.length > 0 ? (
+          {allTasks && allTasks.length > 0 ? (
             allTasks.map((data, index) => (
               <IssueCard
                 key={index}

@@ -5,6 +5,7 @@ import { Colors } from "../../constants/config";
 const ListFilter = ({ filterType, taskTypeFilter, onChangeTaskTypeFilter }) => {
   // const [taskTypeFilter, setTaskTypeFilter] = useState("TODO");
   const isSelected = taskTypeFilter === filterType;
+
   return (
     <TouchableOpacity
       style={[

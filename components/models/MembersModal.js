@@ -20,6 +20,7 @@ const MembersModal = (props) => {
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [deleteModal, setDeleteModal] = useState(false);
   const [memberId, setMemberId] = useState(null);
+  const [membersError, setMembersError] = useState(false);
 
   const teamLeaderData = users
     .filter(
@@ -54,14 +55,20 @@ const MembersModal = (props) => {
       selectedMembers.includes(user.email)
     );
     const members = selectedUsers.map(createUserObject);
-    const resp = await dispatch(addMembers(props.teamId, members))
+    const resp = await dispatch(addMembers(props.teamId, members));
     resp && props.navigation.goBack();
   };
 
   const deleteMemberHandler = async () => {
     const resp = await dispatch(deleteMember(props.teamId, memberId));
-    resp && closeDeleteModal();
+    !resp && setMembersError(true);
+    closeDeleteModal();
   };
+
+  cancelHandler = () => {
+    props.closeModal();
+    setMembersError(false);
+  }
 
   return (
     <Modal
@@ -114,6 +121,12 @@ const MembersModal = (props) => {
               </>
             )}
 
+            {membersError && (
+              <Text style={styles.validation}>
+                The number of members in the team can't be less than 1
+              </Text>
+            )}
+
             <View style={styles.buttons}>
               <Button
                 onPress={addMemberHandler}
@@ -122,7 +135,7 @@ const MembersModal = (props) => {
                 {isLoading ? <DotPulse /> : "Save"}
               </Button>
               <Button
-                onPress={props.closeModal}
+                onPress={cancelHandler}
                 btnStyle={styles.btnStyle}
                 textColor={Colors.lightBlack}
               >
@@ -180,6 +193,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     marginTop: 18,
+  },
+  validation: {
+    textAlign: "center",
+    color: Colors.error,
+    marginTop: 24,
+    paddingHorizontal: 12,
+    fontSize: 14,
   },
   buttons: {
     flexDirection: "row-reverse",

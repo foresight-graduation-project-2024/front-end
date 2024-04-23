@@ -8,15 +8,20 @@ import { Colors } from "../../constants/config";
 import TeamCard from "./TeamCard";
 import AddEditTeamModal from "./../models/AddEditTeamModal";
 import { getAllTeams, getTeamDetails } from "../../store/actions/Tasks";
-import {  getUsers, getUserTeams } from "../../store/actions/Users";
+import {
+  getUsers,
+  getUserTasks,
+  getUserTeams,
+} from "../../store/actions/Users";
 import Indicator from "../custom/Indicator";
 
 const Teams = ({ navigation }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
-  const teams = user.role === "TECHNICAL_MANAGER"
-    ? useSelector((state) => state.tasks.teams)
-    : useSelector((state) => state.user.userTeams);
+  const teams =
+    user.role === "TECHNICAL_MANAGER"
+      ? useSelector((state) => state.tasks.teams)
+      : useSelector((state) => state.user.userTeams);
   const isLoading = useSelector((state) => state.ui.isLoading);
 
   const [showAddIssue, setShowAddIssue] = useState(false);
@@ -42,8 +47,8 @@ const Teams = ({ navigation }) => {
         </View>
       ),
     });
-    user.role === "TECHNICAL_MANAGER" 
-      ? dispatch(getAllTeams()) 
+    user.role === "TECHNICAL_MANAGER"
+      ? dispatch(getAllTeams())
       : dispatch(getUserTeams(user.id));
 
     dispatch(getUsers());
@@ -63,7 +68,7 @@ const Teams = ({ navigation }) => {
   };
 
   const teamTasksHandler = async (data) => {
-    const teamData = await dispatch(getTeamDetails(data.teamId));
+    const teamData = await dispatch(getTeamDetails(data.teamId))
     teamData && navigation.navigate("Board", { teamData });
   };
 

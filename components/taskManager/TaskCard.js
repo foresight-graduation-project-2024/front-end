@@ -22,7 +22,7 @@ const TaskCard = (props) => {
           ) : (
             <Text style={styles.assigneeText}>
               {"N"}
-              {"A"}
+              {"O"}
             </Text>
           )}
         </View>

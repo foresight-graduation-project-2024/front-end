@@ -25,6 +25,7 @@ import { createUserObject, timeFormat } from "../../constants/Utility";
 const TaskDetailsModal = (props) => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.ui.isLoading);
+  const user = useSelector((state) => state.user.user);
   const users = useSelector((state) => state.user.users);
 
   const initialDropdownState = {
@@ -54,6 +55,10 @@ const TaskDetailsModal = (props) => {
   const endDateFormat = endTime
     ? timeFormat(endTime)
     : props.taskDetails?.endDate.replace("T", ", ");
+
+  const constraints =
+    user.role === "TECHNICAL_MANAGER" ||
+    props.team.teamLeader.email === user.email;
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -141,8 +146,6 @@ const TaskDetailsModal = (props) => {
     }
   };
 
-  // console.log(props.taskDetails);
-
   return (
     <Modal animationType="slide" style={styles.modal} visible={props.showModal}>
       <ConfirmModal
@@ -161,12 +164,14 @@ const TaskDetailsModal = (props) => {
                   style={styles.closeImg}
                 />
               </TouchableOpacity>
-              <Ionicons
-                name="trash-outline"
-                size={24}
-                color="black"
-                onPress={openDeleteModal}
-              />
+              {constraints && (
+                <Ionicons
+                  name="trash-outline"
+                  size={24}
+                  color="black"
+                  onPress={openDeleteModal}
+                />
+              )}
             </View>
 
             <Text style={styles.taskNum}>{props.taskDetails?.title}</Text>
@@ -177,6 +182,7 @@ const TaskDetailsModal = (props) => {
               onChangeText={(text) => {
                 setNewTaskSummary(text);
               }}
+              editable={constraints}
             />
 
             <Text style={styles.desc}>Description:</Text>
@@ -188,12 +194,13 @@ const TaskDetailsModal = (props) => {
                 onChangeText={(text) => {
                   setNewTaskDesc(text);
                 }}
+                editable={constraints}
               />
             </View>
 
             <View style={styles.dropdownContainer}>
               <Dropdown
-                isVisible={dropdowns.status.isVisible}
+                isVisible={dropdowns.status.isVisible && constraints}
                 toggleHandler={() => toggleDropdown("status")}
                 items={STATUS}
                 selectItemHandler={(item) => selectItem("status", item)}
@@ -204,38 +211,49 @@ const TaskDetailsModal = (props) => {
             </View>
             <View style={styles.dropdownContainer}>
               <Dropdown
-                isVisible={dropdowns.priority.isVisible}
+                isVisible={dropdowns.priority.isVisible && constraints}
                 toggleHandler={() => toggleDropdown("priority")}
                 items={PRIORITY}
                 selectItemHandler={(item) => selectItem("priority", item)}
                 label="Priority"
                 selectedItem={dropdowns.priority.selected}
                 labelMarginRight={-46}
+                enableEdit={constraints}
               />
             </View>
 
             {/* TODO: show for team leader only => to get it compare between curUser.email and team.teamLeader.email */}
             <Text style={[styles.desc, { marginBottom: 6 }]}>Assignee:</Text>
-            <SelectList
-              save="value"
-              placeholder="Select Assignee "
-              data={assigneeMembers}
-              setSelected={onSelectedAssignee}
-              defaultOption={{
-                key: props.taskDetails?.assignee?.memberId || null,
-                value: props.taskDetails?.assignee?.email || null,
-              }}
-            />
+            {constraints ? (
+              <SelectList
+                save="value"
+                placeholder="Select Assignee "
+                data={assigneeMembers}
+                setSelected={onSelectedAssignee}
+                defaultOption={{
+                  key: props.taskDetails?.assignee?.memberId || null,
+                  value: props.taskDetails?.assignee?.email || null,
+                }}
+              />
+            ) : (
+              <Text>
+                {props.taskDetails?.assignee?.firstname +
+                  " " +
+                  props.taskDetails?.assignee?.lastname}
+              </Text>
+            )}
 
             <Text style={styles.desc}>Start date:</Text>
             <View style={styles.timeContent}>
               <Text style={styles.descValue}>{startDateFormat}</Text>
-              <TouchableOpacity onPress={showDatePicker}>
-                <Image
-                  source={require("../../assets/calendar.png")}
-                  style={styles.calendarImg}
-                />
-              </TouchableOpacity>
+              {constraints && (
+                <TouchableOpacity onPress={showDatePicker}>
+                  <Image
+                    source={require("../../assets/calendar.png")}
+                    style={styles.calendarImg}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
             <DateTimePickerModal
               isVisible={isDatePickerVisible}
@@ -247,12 +265,14 @@ const TaskDetailsModal = (props) => {
             <Text style={styles.desc}>End date:</Text>
             <View style={styles.timeContent}>
               <Text style={styles.descValue}>{endDateFormat}</Text>
-              <TouchableOpacity onPress={showEndDatePicker}>
-                <Image
-                  source={require("../../assets/calendar.png")}
-                  style={styles.calendarImg}
-                />
-              </TouchableOpacity>
+              {constraints && (
+                <TouchableOpacity onPress={showEndDatePicker}>
+                  <Image
+                    source={require("../../assets/calendar.png")}
+                    style={styles.calendarImg}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
             <DateTimePickerModal
               isVisible={isEndDateVisible}

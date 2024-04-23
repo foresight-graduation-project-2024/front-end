@@ -36,26 +36,38 @@ const ManageTasks = ({ navigation, route }) => {
   const [taskDetails, setTaskDetails] = useState();
 
   const data = route.params?.teamData;
-  const allTeamTasks = data.teamTasks;
+  let allTeamTasks = data.teamTasks;
   const allMembers = data.members;
+  const constraints =
+    user.role === "TECHNICAL_MANAGER" || data.teamLeader.email === user.email;
+
+  if (!constraints) {
+    allTeamTasks = allTeamTasks?.filter(
+      (task) => task.assignee.email === user.email
+    );
+  }
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: data.name || "",
       headerRight: () => (
         <View style={styles.logout}>
-          <Ionicons
-            name="trash-outline"
-            size={24}
-            color="white"
-            onPress={openDeleteModal}
-          />
-          <Ionicons
-            name="ellipsis-vertical-outline"
-            size={24}
-            color="white"
-            onPress={openEditTeam}
-          />
+          {user.role === "TECHNICAL_MANAGER" && (
+            <>
+              <Ionicons
+                name="trash-outline"
+                size={24}
+                color="white"
+                onPress={openDeleteModal}
+              />
+              <Ionicons
+                name="ellipsis-vertical-outline"
+                size={24}
+                color="white"
+                onPress={openEditTeam}
+              />
+            </>
+          )}
         </View>
       ),
     });
@@ -134,6 +146,7 @@ const ManageTasks = ({ navigation, route }) => {
         taskDetails={taskDetails}
         allMembers={allMembers}
         navigation={navigation}
+        team={data}
       />
       <MembersModal
         showModal={showMemberModal}

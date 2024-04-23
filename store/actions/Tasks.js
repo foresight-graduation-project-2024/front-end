@@ -17,7 +17,7 @@ export const getAllTeams = () => async (dispatch) => {
   } finally {
     dispatch(uiStopLoading());
   }
-}
+};
 
 export const getTeamDetails = (teamId) => async (dispatch) => {
   try {
@@ -31,17 +31,17 @@ export const getTeamDetails = (teamId) => async (dispatch) => {
   } finally {
     dispatch(uiStopLoading());
   }
-}
+};
 
 export const addTeam = (teamData) => async (dispatch) => {
   try {
-    dispatch(uiStartLoading())
+    dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
     await axios({
       method: "POST",
       url: baseUrl + "/team",
       data: teamData,
-      headers
+      headers,
     });
     dispatch(getAllTeams());
     return true;
@@ -51,17 +51,17 @@ export const addTeam = (teamData) => async (dispatch) => {
   } finally {
     dispatch(uiStopLoading());
   }
-}
+};
 
 export const editTeamDetails = (newTeamData) => async (dispatch) => {
   try {
-    dispatch(uiStartLoading())
+    dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
     await axios({
       method: "PUT",
       url: `${baseUrl}/team`,
       data: newTeamData,
-      headers
+      headers,
     });
     dispatch(getAllTeams());
     return true;
@@ -85,7 +85,7 @@ export const deleteTeam = (teamId) => async (dispatch) => {
   } finally {
     dispatch(uiStopLoading());
   }
-}
+};
 
 export const getAllTasks = () => async (dispatch) => {
   try {
@@ -99,17 +99,17 @@ export const getAllTasks = () => async (dispatch) => {
   } finally {
     dispatch(uiStopLoading());
   }
-}
+};
 
 export const addTask = (teamId, taskData) => async (dispatch) => {
   try {
-    dispatch(uiStartLoading())
+    dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
     await axios({
       method: "POST",
       url: baseUrl + `/task/${teamId}`,
       data: taskData,
-      headers
+      headers,
     });
     // dispatch(getTeamDetails(teamId));
     return true;
@@ -119,7 +119,7 @@ export const addTask = (teamId, taskData) => async (dispatch) => {
   } finally {
     dispatch(uiStopLoading());
   }
-}
+};
 
 export const getTaskDetails = (taskId) => async (dispatch) => {
   try {
@@ -133,17 +133,17 @@ export const getTaskDetails = (taskId) => async (dispatch) => {
   } finally {
     dispatch(uiStopLoading());
   }
-}
+};
 
 export const editTask = (teamId, newTaskData) => async (dispatch) => {
   try {
-    dispatch(uiStartLoading())
+    dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
     await axios({
       method: "PUT",
       url: baseUrl + `/task/${teamId}`,
       data: newTaskData,
-      headers
+      headers,
     });
     // dispatch(getTeamDetails(teamId));
     return true;
@@ -153,13 +153,13 @@ export const editTask = (teamId, newTaskData) => async (dispatch) => {
   } finally {
     dispatch(uiStopLoading());
   }
-}
+};
 
 export const deleteTask = (teamId, taskId) => async (dispatch) => {
   try {
     dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
-    console.log(teamId, taskId)
+    console.log(teamId, taskId);
     await axios.delete(`${baseUrl}/task/${teamId}/${taskId}`, { headers });
     dispatch(getAllTasks());
     return true;
@@ -169,7 +169,7 @@ export const deleteTask = (teamId, taskId) => async (dispatch) => {
   } finally {
     dispatch(uiStopLoading());
   }
-}
+};
 
 export const addMembers = (teamId, members) => async (dispatch) => {
   try {
@@ -179,7 +179,7 @@ export const addMembers = (teamId, members) => async (dispatch) => {
       method: "POST",
       url: baseUrl + `/team/member/${teamId}`,
       data: members,
-      headers
+      headers,
     });
     dispatch(getTeamDetails(teamId));
     return true;
@@ -188,32 +188,33 @@ export const addMembers = (teamId, members) => async (dispatch) => {
   } finally {
     dispatch(uiStopLoading());
   }
-}
+};
 
 export const deleteMember = (teamId, memberId) => async (dispatch) => {
   try {
     dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
-    await axios.delete(`${baseUrl}/team/member/${teamId}/${memberId}`, { headers });
+    await axios.delete(`${baseUrl}/team/member/${teamId}/${memberId}`, {
+      headers,
+    });
     dispatch(getTeamDetails(teamId));
     return true;
   } catch (error) {
     console.log("deleteMember ERROR CODE ==>", error.response.data.code);
-    // TODO if code is equal '11' show message the members can't be little than 1
   } finally {
     dispatch(uiStopLoading());
   }
-}
+};
 
 export const addComment = (taskId, commentDetails) => async (dispatch) => {
   try {
-    dispatch(uiStartLoading())
+    dispatch(uiStartLoading());
     const headers = await dispatch(getCurToken());
     await axios({
       method: "POST",
       url: baseUrl + `/task/${taskId}/comment`,
       data: commentDetails,
-      headers
+      headers,
     });
     dispatch(getAllTasks());
     return true;
@@ -222,7 +223,7 @@ export const addComment = (taskId, commentDetails) => async (dispatch) => {
   } finally {
     dispatch(uiStopLoading());
   }
-}
+};
 
 export const setTeams = (payload) => ({
   type: actions.GET_TEAMS,

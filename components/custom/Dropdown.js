@@ -17,13 +17,15 @@ const Dropdown = (props) => {
         activeOpacity={1}
         style={[styles.dropDown, { height: 46, marginTop: 12 }]}
       >
-        <View style={styles.arrow}>
-          {!props.isVisible ? (
-            <Image source={require("../../assets/expand_more.png")} />
-          ) : (
-            <Image source={require("../../assets/expand_more_up.png")} />
-          )}
-        </View>
+        {props.enableEdit && (
+          <View style={styles.arrow}>
+            {!props.isVisible ? (
+              <Image source={require("../../assets/expand_more.png")} />
+            ) : (
+              <Image source={require("../../assets/expand_more_up.png")} />
+            )}
+          </View>
+        )}
         <View style={[styles.dropDownDisplay]}>
           <Text style={styles.labelStyle}>{props.selectedItem}</Text>
         </View>

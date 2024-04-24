@@ -8,6 +8,7 @@ import { getAllUserNotification } from "../store/actions/Notification";
 import Indicator from "../components/custom/Indicator";
 import { Colors } from "../constants/config";
 import { authLogout } from "../store/actions/Authentication";
+import WebSocketComponent from "../components/notification/WebSocketComponent";
 
 const Notification = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -44,21 +45,28 @@ const Notification = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <WebSocketComponent
+        userId={user.id}
+        notificationContainer={styles.notificationContainer}
+        dateText={styles.dateText}
+      />
       {isLoading ? (
         <Indicator />
       ) : (
-        <ScrollView>
+        <ScrollView style={styles.scrolling}>
           {allNotification && allNotification.length > 0 ? (
-            allNotification.map((data, index) => (
-              <View key={index} style={styles.notificationContainer}>
-                <Text>{data.content}</Text>
-                <Text style={styles.dateText}>
-                  {formatDistanceToNow(new Date(data.issuedDate), {
-                    addSuffix: true,
-                  })}
-                </Text>
-              </View>
-            ))
+            allNotification
+              .sort((a, b) => new Date(b.issuedDate) - new Date(a.issuedDate))
+              .map((data, index) => (
+                <View key={index} style={styles.notificationContainer}>
+                  <Text>{data.content}</Text>
+                  <Text style={styles.dateText}>
+                    {formatDistanceToNow(new Date(data.issuedDate), {
+                      addSuffix: true,
+                    })}
+                  </Text>
+                </View>
+              ))
           ) : (
             <Text style={styles.noNotification}>No notification found!</Text>
           )}
@@ -86,6 +94,10 @@ const styles = StyleSheet.create({
     color: Colors.grey,
     textAlign: "right",
     marginTop: 6,
+  },
+  scrolling: {
+    // width: "100%",
+    // marginBottom: 12,
   },
   noNotification: {
     justifyContent: "center",

@@ -244,6 +244,7 @@ const TaskDetailsModal = (props) => {
               />
             </View>
 
+            {/* TODO When change any field without this section, The assignee be null */}
             <Text style={[styles.desc, { marginBottom: 6 }]}>Assignee:</Text>
             {constraints ? (
               <SelectList

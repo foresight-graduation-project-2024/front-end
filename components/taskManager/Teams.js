@@ -7,7 +7,7 @@ import { authLogout } from "../../store/actions/Authentication";
 import { Colors } from "../../constants/config";
 import TeamCard from "./TeamCard";
 import AddEditTeamModal from "./../models/AddEditTeamModal";
-import { getAllTeams, getTeamDetails } from "../../store/actions/Tasks";
+import { getAllTasks, getAllTeams, getTeamDetails } from "../../store/actions/Tasks";
 import {
   getUsers,
   getUserTasks,
@@ -47,11 +47,16 @@ const Teams = ({ navigation }) => {
         </View>
       ),
     });
-    user.role === "TECHNICAL_MANAGER"
-      ? dispatch(getAllTeams())
-      : dispatch(getUserTeams(user.id));
+
+    if (user.role === "TECHNICAL_MANAGER")
+      dispatch(getAllTasks())
+    else {
+      dispatch(getUserTasks(user.id))
+      dispatch(getUserTeams(user.id));
+    };
 
     dispatch(getUsers());
+    dispatch(getAllTeams());
   }, []);
 
   const logoutHandler = () => {

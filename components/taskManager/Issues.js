@@ -21,33 +21,42 @@ const Issues = ({ navigation }) => {
 
   const user = useSelector((state) => state.user.user);
   const isLoading = useSelector((state) => state.ui.isLoading);
-  // const allTeams = useSelector((state) => state.tasks.teams);
+  const allTeams = useSelector((state) => state.tasks.teams);
 
-  const allTasks =
+  const allUserTasks =
     user.role === "TECHNICAL_MANAGER"
       ? useSelector((state) => state.tasks.allTasks)
       : useSelector((state) => state.user.userTasks);
 
   const [showTaskDetails, setShowTaskDetails] = useState(false);
   const [taskDetails, setTaskDetails] = useState();
-  // const [allTasks, setAllTasks] = useState(allUserTasks);
+  const [allTasks, setAllTasks] = useState(allUserTasks);
 
-  // const getTeamTasksForTeamLeader = async () => {
-  //   const curUserTeams =
-  //     allTeams &&
-  //     allTeams.filter((team) => team.teamLeader.email === user.email);
+  const getTeamTasksForTeamLeader = async () => {
+    const curUserTeams =
+      allTeams &&
+      allTeams.filter((team) => team.teamLeader.email === user.email);
 
-  //   const teamIds = curUserTeams && curUserTeams.map((team) => team.teamId);
+    const teamIds = curUserTeams && curUserTeams.map((team) => team.teamId);
 
-  //   if (teamIds) {
-  //     const additionalTasks = await Promise.all(
-  //       teamIds.map((id) => dispatch(getTeamDetails(id)))
-  //     );
+    if (teamIds) {
+      const additionalTasks = await Promise.all(
+        teamIds.map((id) => dispatch(getTeamDetails(id)))
+      );
 
-  //     const tasksFromAdditionalTasks = additionalTasks.flatMap(team => team.teamTasks);
-  //     setAllTasks((prevTasks) => [...prevTasks, ...tasksFromAdditionalTasks]);
-  //   }
-  // };
+      const tasksFromAdditionalTasks = await additionalTasks.flatMap(
+        (team) => team.teamTasks
+      );
+
+      setAllTasks((prevTasks) => {
+        const newTasks = tasksFromAdditionalTasks.filter(
+          (task) =>
+            !prevTasks.some((prevTask) => prevTask.taskId === task.taskId)
+        );
+        return [...prevTasks, ...newTasks];
+      });
+    }
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -62,16 +71,11 @@ const Issues = ({ navigation }) => {
         </View>
       ),
     });
-
-    dispatch(getAllTeams());
-    user.role === "TECHNICAL_MANAGER"
-      ? dispatch(getAllTasks())
-      : dispatch(getUserTasks(user.id));
   }, []);
 
-  // useEffect(() => {
-  //   getTeamTasksForTeamLeader();
-  // }, []);
+  useEffect(() => {
+    user.role !== "TECHNICAL_MANAGER" && getTeamTasksForTeamLeader();
+  }, []);
 
   const logoutHandler = () => {
     dispatch(authLogout());

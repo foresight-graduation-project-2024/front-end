@@ -20,7 +20,6 @@ import AddEditTeamModal from "../components/models/AddEditTeamModal";
 import ConfirmModal from "../components/models/ConfirmModal";
 import TaskDetailsModal from "../components/models/TaskDetailsModal";
 import MembersModal from "../components/models/MembersModal";
-import WebSocketComponent from "../components/notification/WebSocketComponent";
 
 const { width } = Dimensions.get("window");
 
@@ -43,7 +42,7 @@ const ManageTasks = ({ navigation, route }) => {
 
   if (!constraints) {
     allTeamTasks = allTeamTasks?.filter(
-      (task) => task.assignee.email === user.email
+      (task) => task.assignee?.email === user.email
     );
   }
 
@@ -156,8 +155,6 @@ const ManageTasks = ({ navigation, route }) => {
         teamLeader={data.teamLeader.email}
         navigation={navigation}
       />
-
-      <WebSocketComponent userId={user.id} />
 
       {user.role === "TECHNICAL_MANAGER" && (
         <View style={styles.membersContent}>

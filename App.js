@@ -1,3 +1,4 @@
+import { SvgUri } from 'react-native-svg';
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -30,6 +31,7 @@ function TasksOverview({}) {
         tabBarActiveTintColor: Colors.primary,
       }}
     >
+      {/* TODO change the icons */}
       <bottomTab.Screen
         name="Teams"
         component={Teams}

@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 
 const TeamCard = (props) => {
-  // console.log("Sig =>", props.teamKey)
   return (
     <TouchableOpacity 
       style={[styles.container, {

@@ -14,7 +14,7 @@ const TeamCard = (props) => {
       <View style={styles.teamDetails}>
         <Text style={styles.teamName}>{props.teamName}</Text>
         <Text>
-          {props.teamDesc.length > 30
+          {props.teamDesc && props.teamDesc.length > 30
             ? props.teamDesc.substring(0, 30) + " ..."
             : props.teamDesc}
         </Text>

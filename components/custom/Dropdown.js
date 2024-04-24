@@ -17,7 +17,7 @@ const Dropdown = (props) => {
         activeOpacity={1}
         style={[styles.dropDown, { height: 46, marginTop: 12 }]}
       >
-        {props.enableEdit && (
+        {!props.hideArrow && (
           <View style={styles.arrow}>
             {!props.isVisible ? (
               <Image source={require("../../assets/expand_more.png")} />

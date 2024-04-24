@@ -23,6 +23,8 @@ const UserDetails = ({ route, navigation }) => {
   const [showDeActivate, setShowDeActivate] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
 
+  const constraints = user.role === "TECHNICAL_MANAGER";
+
   const activateHandler = () => {
     setIsActive((prev) => !prev);
     setShowDeActivate((prev) => !prev);
@@ -60,55 +62,93 @@ const UserDetails = ({ route, navigation }) => {
         closeModal={closeChangePassword}
       />
 
-      <View style={[styles.userInformation, shadowStyle.shadow_md]}>
-        <View style={[styles.userInfoContent, {
-          flexDirection: user.role === "TECHNICAL_MANAGER" ? "column" : "row",
-        }]}>
-          <View>
-            <Text style={styles.fullName}>
-              {user.firstname} {user.lastname}
-            </Text>
-            <Text style={styles.emailStyle}>{user.email}</Text>
+      <ScrollView style={[styles.scrolling, shadowStyle.shadow_md]}>
+        <View style={styles.userInformation}>
+          <View
+            style={[
+              styles.userInfoContent,
+              {
+                flexDirection: constraints ? "column" : "row",
+              },
+            ]}
+          >
+            <View style={{ width: constraints ? "100%" : "50%" }}>
+              <Text
+                style={[
+                  styles.fullName,
+                  {
+                    textAlign: constraints ? "center" : "left",
+                  },
+                ]}
+              >
+                {user.firstname} {user.lastname}
+              </Text>
+              <Text
+                style={[
+                  styles.emailStyle,
+                  {
+                    textAlign: constraints ? "center" : "left",
+                  },
+                ]}
+              >
+                {user.email}
+              </Text>
+            </View>
+            <View
+              style={{
+                width: constraints ? "100%" : "50%",
+              }}
+            >
+              <Text
+                style={[
+                  styles.roleText,
+                  {
+                    textAlign: constraints ? "center" : "right",
+                  },
+                ]}
+              >
+                {user.role}
+              </Text>
+            </View>
           </View>
-          <Text style={styles.roleText}>{user.role}</Text>
-        </View>
-        {user.role !== "TECHNICAL_MANAGER" && (
-          <>
-            <Text style={styles.header}>His teams:</Text>
-            <ScrollView>
-              {userTeams && userTeams.length > 0 ? (
-                userTeams.map((data, index) => (
-                  <TeamCard
-                    key={index}
-                    hideIcon={true}
-                    teamName={data.name}
-                    teamDesc={data.description}
-                    teamKey={data.signature}
-                  />
-                ))
-              ) : (
-                <Text style={styles.noJoined}>No teams exist!</Text>
-              )}
-            </ScrollView>
+          {user.role !== "TECHNICAL_MANAGER" && (
+            <>
+              <Text style={styles.header}>His teams:</Text>
+              <ScrollView>
+                {userTeams && userTeams.length > 0 ? (
+                  userTeams.map((data, index) => (
+                    <TeamCard
+                      key={index}
+                      hideIcon={true}
+                      teamName={data.name}
+                      teamDesc={data.description}
+                      teamKey={data.signature}
+                    />
+                  ))
+                ) : (
+                  <Text style={styles.noJoined}>No teams exist!</Text>
+                )}
+              </ScrollView>
 
-            <Text style={styles.header}>His tasks:</Text>
-            <ScrollView>
-              {userTasks && userTasks.length > 0 ? (
-                userTasks.map((data, index) => (
-                  <IssueCard
-                    key={index}
-                    hideIcon={true}
-                    issueKey={data.title}
-                    summary={data.summary}
-                  />
-                ))
-              ) : (
-                <Text style={styles.noJoined}>No tasks exist!</Text>
-              )}
-            </ScrollView>
-          </>
-        )}
-      </View>
+              <Text style={styles.header}>His tasks:</Text>
+              <ScrollView>
+                {userTasks && userTasks.length > 0 ? (
+                  userTasks.map((data, index) => (
+                    <IssueCard
+                      key={index}
+                      hideIcon={true}
+                      issueKey={data.title}
+                      summary={data.summary}
+                    />
+                  ))
+                ) : (
+                  <Text style={styles.noJoined}>No tasks exist!</Text>
+                )}
+              </ScrollView>
+            </>
+          )}
+        </View>
+      </ScrollView>
 
       <View style={styles.buttons}>
         <TouchableOpacity style={styles.btnContent} onPress={navToAddEditUser}>
@@ -144,32 +184,39 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 8,
   },
-  userInformation: {
+  scrolling: {
     width: "94%",
-    justifyContent: "center",
+    height: "85%",
     padding: 16,
     backgroundColor: Colors.white,
     borderRadius: 12,
     marginBottom: 12,
   },
+  userInformation: {
+    width: "100%",
+    alignSelf: "center",
+    justifyContent: "center",
+    marginBottom: 24,
+  },
   userInfoContent: {
-    flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 4,
   },
   fullName: {
-    fontSize: 18,
+    fontSize: 16,
     color: Colors.black,
     fontWeight: "600",
   },
   emailStyle: {
+    fontSize: 12,
     marginTop: 4,
     marginBottom: 16,
   },
   roleText: {
-    fontSize: 16,
+    textAlign: "center",
+    fontSize: 11,
     fontWeight: "500",
+    marginLeft: -12,
   },
   header: {
     fontSize: 16,

@@ -26,8 +26,8 @@ const Login = ({ navigation }) => {
 
   const isLoading = useSelector((state) => state.ui.isLoading);
 
-  const [email, setEmail] = useState("mostafa@foresight.com");
-  const [password, setPassword] = useState("123456mM@");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isRemember, setIsRemember] = useState(false);
   const [isSecure, setIsSecure] = useState(true);
   const [isLoginFailed, setIsLoginFailed] = useState(false);

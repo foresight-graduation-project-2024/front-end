@@ -13,14 +13,18 @@ const TaskCard = (props) => {
       </View>
       <View style={styles.taskFooter}>
         <Text>{props.signature}</Text>
-        <View style={styles.assigneeContainer}>
+        <View style={[styles.assigneeContainer, {
+          backgroundColor: props.assignee ? Colors.primary : Colors.dammed,
+        }]}>
           {props.assignee ? (
             <Text style={styles.assigneeText}>
               {props.assignee.firstname[0]}
               {props.assignee.lastname[0]}
             </Text>
           ) : (
-            <Text style={styles.assigneeText}>
+            <Text style={[styles.assigneeText, {
+              color: Colors.black
+            }]}>
               {"N"}
               {"O"}
             </Text>
@@ -43,10 +47,9 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   labelContent: {
-    width: "25%",
+    width: 80,
     alignItems: "center",
     backgroundColor: Colors.white,
-    paddingHorizontal: 6,
     paddingVertical: 4,
     marginTop: 12,
     borderRadius: 4,
@@ -60,7 +63,6 @@ const styles = StyleSheet.create({
   assigneeContainer: {
     width: 24,
     height: 24,
-    backgroundColor: Colors.primary,
     borderRadius: 12,
   },
   assigneeText: {

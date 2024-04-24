@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect } from "react";
 import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
 
 import { getAllUserNotification } from "../store/actions/Notification";
@@ -9,11 +9,13 @@ import Indicator from "../components/custom/Indicator";
 import { Colors } from "../constants/config";
 import { authLogout } from "../store/actions/Authentication";
 
-const Notification = ({navigation}) => {
+const Notification = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user.user);
-  const allNotification = useSelector((state) => state.notification.userNotification);
+  const allNotification = useSelector(
+    (state) => state.notification.userNotification
+  );
   const isLoading = useSelector((state) => state.ui.isLoading);
 
   useLayoutEffect(() => {
@@ -46,17 +48,20 @@ const Notification = ({navigation}) => {
         <Indicator />
       ) : (
         <ScrollView>
-          {allNotification ?
+          {allNotification && allNotification.length > 0 ? (
             allNotification.map((data, index) => (
               <View key={index} style={styles.notificationContainer}>
                 <Text>{data.content}</Text>
                 <Text style={styles.dateText}>
-                  {formatDistanceToNow(new Date(data.issuedDate), { addSuffix: true })}
+                  {formatDistanceToNow(new Date(data.issuedDate), {
+                    addSuffix: true,
+                  })}
                 </Text>
               </View>
-            )) : (
+            ))
+          ) : (
             <Text style={styles.noNotification}>No notification found!</Text>
-            )}
+          )}
         </ScrollView>
       )}
     </View>

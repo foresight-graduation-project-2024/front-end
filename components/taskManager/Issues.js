@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,7 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { authLogout } from "../../store/actions/Authentication";
 import { Colors } from "../../constants/config";
 import IssueCard from "./IssueCard";
-import { getAllTasks, getTaskDetails } from "../../store/actions/Tasks";
+import {
+  getAllTasks,
+  getAllTeams,
+  getTaskDetails,
+  getTeamDetails,
+} from "../../store/actions/Tasks";
 import Indicator from "./../custom/Indicator";
 import TaskDetailsModal from "../models/TaskDetailsModal";
 import { getUserTasks } from "../../store/actions/Users";
@@ -15,13 +20,34 @@ const Issues = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user.user);
-  const allTasks = user.role === "TECHNICAL_MANAGER" 
-    ? useSelector((state) => state.tasks.allTasks) 
-    : useSelector((state) => state.user.userTasks);
   const isLoading = useSelector((state) => state.ui.isLoading);
+  // const allTeams = useSelector((state) => state.tasks.teams);
+
+  const allTasks =
+    user.role === "TECHNICAL_MANAGER"
+      ? useSelector((state) => state.tasks.allTasks)
+      : useSelector((state) => state.user.userTasks);
 
   const [showTaskDetails, setShowTaskDetails] = useState(false);
   const [taskDetails, setTaskDetails] = useState();
+  // const [allTasks, setAllTasks] = useState(allUserTasks);
+
+  // const getTeamTasksForTeamLeader = async () => {
+  //   const curUserTeams =
+  //     allTeams &&
+  //     allTeams.filter((team) => team.teamLeader.email === user.email);
+
+  //   const teamIds = curUserTeams && curUserTeams.map((team) => team.teamId);
+
+  //   if (teamIds) {
+  //     const additionalTasks = await Promise.all(
+  //       teamIds.map((id) => dispatch(getTeamDetails(id)))
+  //     );
+
+  //     const tasksFromAdditionalTasks = additionalTasks.flatMap(team => team.teamTasks);
+  //     setAllTasks((prevTasks) => [...prevTasks, ...tasksFromAdditionalTasks]);
+  //   }
+  // };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -36,18 +62,24 @@ const Issues = ({ navigation }) => {
         </View>
       ),
     });
-    user.role === "TECHNICAL_MANAGER" 
-      ? dispatch(getAllTasks()) 
+
+    dispatch(getAllTeams());
+    user.role === "TECHNICAL_MANAGER"
+      ? dispatch(getAllTasks())
       : dispatch(getUserTasks(user.id));
   }, []);
+
+  // useEffect(() => {
+  //   getTeamTasksForTeamLeader();
+  // }, []);
 
   const logoutHandler = () => {
     dispatch(authLogout());
     navigation.navigate("Foresight");
   };
 
-  const showTaskDetailsHandler = async (data) => {
-    const taskData = await dispatch(getTaskDetails(data.taskId));
+  const showTaskDetailsHandler = async (taskId) => {
+    const taskData = await dispatch(getTaskDetails(taskId));
     if (taskData) {
       setTaskDetails(taskData);
       setShowTaskDetails(true);
@@ -64,6 +96,7 @@ const Issues = ({ navigation }) => {
         showModal={showTaskDetails}
         closeModal={closeTaskDetailsHandler}
         taskDetails={taskDetails}
+        navigation={navigation}
       />
 
       <Text style={styles.headerText}>All issues</Text>
@@ -78,8 +111,9 @@ const Issues = ({ navigation }) => {
                 issueKey={data.title}
                 summary={data.summary}
                 onPress={() => {
-                  showTaskDetailsHandler(data);
+                  showTaskDetailsHandler(data.taskId);
                 }}
+                disableClickable={true}
               />
             ))
           ) : (

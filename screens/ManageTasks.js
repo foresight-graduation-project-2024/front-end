@@ -39,7 +39,7 @@ const ManageTasks = ({ navigation, route }) => {
   let allTeamTasks = data.teamTasks;
   const allMembers = data.members;
   const constraints =
-    user.role === "TECHNICAL_MANAGER" || data.teamLeader.email === user.email;
+    user.role === "TECHNICAL_MANAGER" || data?.teamLeader?.email === user.email;
 
   if (!constraints) {
     allTeamTasks = allTeamTasks?.filter(
@@ -99,8 +99,8 @@ const ManageTasks = ({ navigation, route }) => {
     setShowAddTeam(false);
   };
 
-  const taskPressHandler = async (data) => {
-    const taskData = await dispatch(getTaskDetails(data.taskId));
+  const taskPressHandler = async (taskId) => {
+    const taskData = await dispatch(getTaskDetails(taskId));
     if (taskData) {
       setTaskDetails(taskData);
       setShowTaskDetails(true);
@@ -141,12 +141,12 @@ const ManageTasks = ({ navigation, route }) => {
         confirmBtn={deleteTeamHandler}
       />
       <TaskDetailsModal
-        showModal={showTaskDetails}
-        closeModal={closeTaskDetailsHandler}
         taskDetails={taskDetails}
         allMembers={allMembers}
-        navigation={navigation}
         team={data}
+        navigation={navigation}
+        showModal={showTaskDetails}
+        closeModal={closeTaskDetailsHandler}
       />
       <MembersModal
         showModal={showMemberModal}
@@ -162,7 +162,7 @@ const ManageTasks = ({ navigation, route }) => {
       {user.role === "TECHNICAL_MANAGER" && (
         <View style={styles.membersContent}>
           <View style={styles.members}>
-            {allMembers?.length > 0 &&
+            {allMembers && allMembers?.length > 0 &&
               allMembers.map((data, index) => (
                 <View key={index}>
                   {index < 6 ? (
@@ -175,7 +175,7 @@ const ManageTasks = ({ navigation, route }) => {
                   ) : (
                     <View style={styles.assigneeContainer}>
                       <Text style={styles.assigneeText}>
-                        +{allMembers?.length - 6}
+                        +{allMembers.length - 6}
                       </Text>
                     </View>
                   )}
@@ -205,7 +205,7 @@ const ManageTasks = ({ navigation, route }) => {
                 <Text>({filteredTasks?.length || 0})</Text>
               </View>
               <ScrollView style={styles.scrollStyle}>
-                {filteredTasks?.length > 0 ? (
+                {filteredTasks && filteredTasks.length > 0 ? (
                   filteredTasks.map((data, index) => (
                     <TaskCard
                       key={index}
@@ -213,7 +213,7 @@ const ManageTasks = ({ navigation, route }) => {
                       summary={data.summary}
                       priority={data.priority}
                       assignee={data.assignee}
-                      onPress={() => taskPressHandler(data)}
+                      onPress={() => taskPressHandler(data.taskId)}
                     />
                   ))
                 ) : (
@@ -309,6 +309,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     padding: 12,
     borderRadius: 12,
+    marginBottom: 24,
   },
   noTasks: {
     justifyContent: "center",
@@ -329,7 +330,8 @@ const styles = StyleSheet.create({
   addIssue: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 4,
+    marginTop: 6,
+    marginBottom: 18,
   },
   addIssueText: {
     fontSize: 16,

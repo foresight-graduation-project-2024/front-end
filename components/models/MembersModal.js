@@ -34,8 +34,10 @@ const MembersModal = (props) => {
       key: item.id,
       value: `${item.email}`,
     }));
+
+  const allEmails = props.allMembers?.map((member) => member.email);
   const membersData = teamLeaderData.filter(
-    (user) => user.value != props.allMembers?.map((member) => member.email)
+    (user) => !allEmails?.includes(user.value)
   );
 
   const onSelectedMembers = (selectedUsers) => {
@@ -61,14 +63,18 @@ const MembersModal = (props) => {
 
   const deleteMemberHandler = async () => {
     const resp = await dispatch(deleteMember(props.teamId, memberId));
-    !resp && setMembersError(true);
     closeDeleteModal();
+    if (!resp) setMembersError(true);
+    else {
+      props.closeModal();
+      props.navigation.goBack();
+    }
   };
 
-  cancelHandler = () => {
+  const cancelHandler = () => {
     props.closeModal();
     setMembersError(false);
-  }
+  };
 
   return (
     <Modal
@@ -97,7 +103,7 @@ const MembersModal = (props) => {
             />
 
             <Text style={styles.mainText}>Team members: </Text>
-            {props.allMembers.length > 0 ? (
+            {props.allMembers && props.allMembers.length > 0 ? (
               props.allMembers.map((data, index) => (
                 <View key={index} style={styles.assigneeContainer}>
                   <Text style={styles.assigneeText}>

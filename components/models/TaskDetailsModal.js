@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -29,8 +29,14 @@ const TaskDetailsModal = (props) => {
   const users = useSelector((state) => state.user.users);
 
   const initialDropdownState = {
-    status: { isVisible: false, selected: STATUS[0] || "" },
-    priority: { isVisible: false, selected: PRIORITY[0] || "" },
+    status: {
+      isVisible: false,
+      selected: props.taskDetails ? props.taskDetails.status : "",
+    },
+    priority: {
+      isVisible: false,
+      selected: props.taskDetails ? props.taskDetails.priority : "",
+    },
   };
 
   const [deleteModal, setDeleteModal] = useState(false);
@@ -42,6 +48,22 @@ const TaskDetailsModal = (props) => {
   const [newTaskSummary, setNewTaskSummary] = useState("");
   const [newTaskDesc, setNewTaskDesc] = useState("");
   const [selectedAssignee, setSelectedAssignee] = useState("");
+
+  useEffect(() => {
+    if (props.taskDetails) {
+      setDropdowns((prevState) => ({
+        ...prevState,
+        status: {
+          ...prevState.status,
+          selected: props.taskDetails.status,
+        },
+        priority: {
+          ...prevState.priority,
+          selected: props.taskDetails.priority,
+        },
+      }));
+    }
+  }, [props.taskDetails]);
 
   const assigneeMembers = props.allMembers?.map((item) => ({
     key: item.memberId,
@@ -58,7 +80,7 @@ const TaskDetailsModal = (props) => {
 
   const constraints =
     user.role === "TECHNICAL_MANAGER" ||
-    props.team.teamLeader.email === user.email;
+    props.team?.teamLeader?.email === user.email;
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -85,7 +107,7 @@ const TaskDetailsModal = (props) => {
 
   const toggleDropdown = (name) => {
     setDropdowns((prevState) => ({
-      ...initialDropdownState,
+      ...prevState,
       [name]: { ...prevState[name], isVisible: !prevState[name].isVisible },
     }));
   };
@@ -123,7 +145,7 @@ const TaskDetailsModal = (props) => {
     const taskInfo = props.taskDetails;
     let assigneeUser = users.filter((user) => user.email === selectedAssignee);
     assigneeUser =
-      Array.isArray(assigneeUser) && assigneeUser.length > 0
+      Array.isArray(assigneeUser) && assigneeUser?.length > 0
         ? createUserObject(assigneeUser[0])
         : null;
 
@@ -200,7 +222,7 @@ const TaskDetailsModal = (props) => {
 
             <View style={styles.dropdownContainer}>
               <Dropdown
-                isVisible={dropdowns.status.isVisible && constraints}
+                isVisible={dropdowns.status.isVisible}
                 toggleHandler={() => toggleDropdown("status")}
                 items={STATUS}
                 selectItemHandler={(item) => selectItem("status", item)}
@@ -218,11 +240,10 @@ const TaskDetailsModal = (props) => {
                 label="Priority"
                 selectedItem={dropdowns.priority.selected}
                 labelMarginRight={-46}
-                enableEdit={constraints}
+                hideArrow={!constraints}
               />
             </View>
 
-            {/* TODO: show for team leader only => to get it compare between curUser.email and team.teamLeader.email */}
             <Text style={[styles.desc, { marginBottom: 6 }]}>Assignee:</Text>
             {constraints ? (
               <SelectList

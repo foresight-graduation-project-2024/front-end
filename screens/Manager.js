@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Colors } from "../constants/config";
 import Search from "../components/custom/Search";
@@ -134,7 +133,7 @@ const Manager = ({ navigation }) => {
         <Indicator />
       ) : (
         <ScrollView>
-          {users.length > 0 ? (
+          {users && users.length > 0 ? (
             users?.map((user) => (
               <TouchableOpacity
                 key={user.id}
@@ -230,9 +229,8 @@ const styles = StyleSheet.create({
   },
   roleTitle: {
     textAlign: "center",
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: "500",
-    marginRight: 4,
   },
   icons: {
     flexDirection: "row",

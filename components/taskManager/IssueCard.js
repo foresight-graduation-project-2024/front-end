@@ -10,11 +10,11 @@ const IssueCard = (props) => {
           flexDirection: props.hideIcon ? "row-reverse" : "row",
         },
       ]}
-      onPress={props.onPress}
+      onPress={props.disableClickable ? () => {} : props.onPress}
     >
       <Text style={styles.issueNum}>{props.issueKey}</Text>
       <Text>
-        {props.summary.length > 30
+        {props.summary && props.summary.length > 30
           ? props.summary.substring(0, 30) + " ..."
           : props.summary}
       </Text>

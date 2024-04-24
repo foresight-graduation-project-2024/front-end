@@ -9,7 +9,6 @@ import DotPulse from "../custom/DotPulse";
 
 const ConfirmModal = (props) => {
   const isLoading = useSelector((state) => state.ui.isLoading);
-  const membersNumError = useSelector((state) => state.tasks.membersNumError);
 
   return (
     <Modal

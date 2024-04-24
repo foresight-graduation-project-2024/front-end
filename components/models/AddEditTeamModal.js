@@ -76,7 +76,7 @@ const AddEditTeamModal = (props) => {
     let teamLeader = users.filter((user) => user.email === selectedTeamLeader);
     teamLeader =
       Array.isArray(teamLeader) &&
-      teamLeader.length > 0 &&
+      teamLeader?.length > 0 &&
       createUserObject(teamLeader[0]);
 
     const teamData = {

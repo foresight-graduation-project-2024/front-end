@@ -1,9 +1,8 @@
-import { SvgUri } from 'react-native-svg';
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
 
 import Login from "./screens/Login";
@@ -17,11 +16,14 @@ import Teams from "./components/taskManager/Teams";
 import Issues from "./components/taskManager/Issues";
 import Splash from "./screens/Splash";
 import Notification from "./screens/Notification";
+import TasksReport from "./screens/TasksReport";
 
 const Stack = createNativeStackNavigator();
 const bottomTab = createBottomTabNavigator();
 
 function TasksOverview({}) {
+  const user = useSelector((state) => state.user.user);
+
   return (
     <bottomTab.Navigator
       screenOptions={{
@@ -31,17 +33,12 @@ function TasksOverview({}) {
         tabBarActiveTintColor: Colors.primary,
       }}
     >
-      {/* TODO change the icons */}
       <bottomTab.Screen
         name="Teams"
         component={Teams}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="folder" color={color} size={size} />
-            // <Image
-            //   source={require("./assets/team.png")}
-            //   style={{ width: 26, height: 26 }}
-            // />
+            <Ionicons name="people" color={color} size={size} />
           ),
         }}
       />
@@ -50,14 +47,22 @@ function TasksOverview({}) {
         component={Issues}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="document-text" color={color} size={size} />
-            // <Image
-            //   source={require("./assets/issue.png")}
-            //   style={{ width: 26, height: 26 }}
-            // />
+            <Ionicons name="bug" color={color} size={size} />
+            // <Ionicons name="alert-circle" color={color} size={size} />
           ),
         }}
       />
+      {/* {user && user.role === "TECHNICAL_MANAGER" && (
+        <bottomTab.Screen
+          name="Report"
+          component={TasksReport}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="pie-chart-outline" color={color} size={size} />
+            ),
+          }}
+        />
+      )} */}
       <bottomTab.Screen
         name="Notifications"
         component={Notification}
@@ -92,10 +97,7 @@ export default function App() {
             component={Login}
             options={{ headerShown: false }}
           />
-          <Stack.Screen
-            name="Manager"
-            component={Manager}
-          />
+          <Stack.Screen name="Manager" component={Manager} />
           <Stack.Screen name="AddEditUser" component={AddEditUser} />
           <Stack.Screen name="UserDetails" component={UserDetails} />
           <Stack.Screen

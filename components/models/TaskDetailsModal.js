@@ -159,7 +159,7 @@ const TaskDetailsModal = (props) => {
       priority: dropdowns.priority.selected,
       startDate: startTime?.toISOString() || taskInfo.startDate,
       endDate: endTime?.toISOString() || taskInfo.endDate,
-      assignee: assigneeUser,
+      assignee: assigneeUser || taskInfo.assignee,
     };
     const resp = await dispatch(editTask(taskInfo.teamId, taskData));
     if (resp) {
@@ -244,7 +244,6 @@ const TaskDetailsModal = (props) => {
               />
             </View>
 
-            {/* TODO When change any field without this section, The assignee be null */}
             <Text style={[styles.desc, { marginBottom: 6 }]}>Assignee:</Text>
             {constraints ? (
               <SelectList

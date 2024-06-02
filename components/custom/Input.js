@@ -23,10 +23,10 @@ function Input(props) {
           ]}
           autoCapitalize="none"
           keyboardType={props.keyboardType}
-          secureTextEntry={props.secure}
+          secureTextEntry={props.isTextSecured}
           value={props.value}
           onChangeText={props.onUpdateValue}
-          multiline={props.multiline || true}
+          multiline={props.multiline || false}
           maxLength={props.maxLength || 120}
         />
         {props.rightIcon && (

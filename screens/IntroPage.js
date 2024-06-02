@@ -22,19 +22,3 @@ const IntroPage = () => {
 const styles = StyleSheet.create({})
 
 export default IntroPage
-
-// onChangeLanguage = () => {
-//   if (this.props.language === "ar") this.props.setLanguage("en");
-//   else this.props.setLanguage("ar");
-
-//   // Start the quiz over.
-//   const test = this.props.tests.filter(
-//     (test) => test.id === this.props.programId
-//   );
-//   const isQuizCompleted = test.isQuizCompleted;
-//   if (!isQuizCompleted) {
-//     this.props.clearLocalDataRelatedToQuiz();
-//   }
-
-//   this.setState({ showChangeLanguageModal: false });
-// };

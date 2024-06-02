@@ -29,6 +29,7 @@ export default Button;
 
 const styles = StyleSheet.create({
   button: {
+    justifyContent: "center",
     backgroundColor: Colors.primary,
     elevation: 2,
     shadowColor: Colors.black,

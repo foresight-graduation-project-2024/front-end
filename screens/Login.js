@@ -38,7 +38,7 @@ const Login = ({ navigation }) => {
   }, []);
 
   const togglePasswordVisibility = useCallback(() => {
-    setIsSecure((prevIsSecure) => !prevIsSecure);
+    setIsSecure(prevIsSecure => !prevIsSecure);
   }, []);
 
   const loginHandler = async () => {
@@ -79,7 +79,7 @@ const Login = ({ navigation }) => {
         />
         <Input
           label={i18n.t("password")}
-          secure={isSecure}
+          isTextSecured={isSecure}
           value={password}
           onUpdateValue={setPassword}
           rightIcon={

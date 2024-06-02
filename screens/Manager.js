@@ -5,7 +5,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
   Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,7 +15,6 @@ import Search from "../components/custom/Search";
 import { getUserTasks, getUserTeams, getUsers } from "../store/actions/Users";
 import Indicator from "./../components/custom/Indicator";
 import { authLogout } from "../store/actions/Authentication";
-// import ListFilter from "../components/taskManager/ListFilter";
 
 const { width, height } = Dimensions.get("window");
 
@@ -25,8 +23,6 @@ const Manager = ({ navigation }) => {
 
   let users = useSelector((state) => state.user.users);
   const isLoading = useSelector((state) => state.ui.isLoading);
-
-  // const [taskTypeFilter, setTaskTypeFilter] = useState("ALL");
 
   users = users?.filter((user) => user.role !== "ADMIN");
 
@@ -78,57 +74,6 @@ const Manager = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Search />
-      {/* <ScrollView
-        style={styles.scrolling}
-        horizontal={true}
-        showsHorizontalScrollIndicator={true}
-      >
-        <ListFilter
-          filterType="ALL"
-          taskTypeFilter={taskTypeFilter}
-          onChangeTaskTypeFilter={setTaskTypeFilter}
-        />
-        <ListFilter
-          filterType="Active"
-          taskTypeFilter={taskTypeFilter}
-          onChangeTaskTypeFilter={setTaskTypeFilter}
-        />
-        <ListFilter
-          filterType="Deactivate"
-          taskTypeFilter={taskTypeFilter}
-          onChangeTaskTypeFilter={setTaskTypeFilter}
-        />
-        <ListFilter
-          filterType="DRIVER"
-          taskTypeFilter={taskTypeFilter}
-          onChangeTaskTypeFilter={setTaskTypeFilter}
-        />
-        <ListFilter
-          filterType="WORKER"
-          taskTypeFilter={taskTypeFilter}
-          onChangeTaskTypeFilter={setTaskTypeFilter}
-        />
-        <ListFilter
-          filterType="SITE_ENGINEER"
-          taskTypeFilter={taskTypeFilter}
-          onChangeTaskTypeFilter={setTaskTypeFilter}
-        />
-        <ListFilter
-          filterType="MONITORING_ENGINEER"
-          taskTypeFilter={taskTypeFilter}
-          onChangeTaskTypeFilter={setTaskTypeFilter}
-        />
-        <ListFilter
-          filterType="TECHNICAL_MANAGER"
-          taskTypeFilter={taskTypeFilter}
-          onChangeTaskTypeFilter={setTaskTypeFilter}
-        />
-        <ListFilter
-          filterType="BUSINESS_MANAGER"
-          taskTypeFilter={taskTypeFilter}
-          onChangeTaskTypeFilter={setTaskTypeFilter}
-        />
-      </ScrollView> */}
       {isLoading ? (
         <Indicator />
       ) : (

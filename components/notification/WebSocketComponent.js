@@ -3,11 +3,13 @@ import { View, Text, ScrollView } from "react-native";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { formatDistanceToNow } from "date-fns";
+import { Audio } from "expo-av";
 
 import { baseNotificationUrl } from "../../constants/config";
 
 const WebSocketComponent = (props) => {
   const [messages, setMessages] = useState([]);
+  const [sound, setSound] = useState();
 
   useEffect(() => {
     const socket = new SockJS(`${baseNotificationUrl}/websocket-Initializer`);
@@ -23,6 +25,11 @@ const WebSocketComponent = (props) => {
           const newMessage = { content, issuedDate };
 
           setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+          if (sound) {
+            console.log("Execute the sound!");
+            sound.playAsync();
+          }
         }
       );
     });
@@ -33,6 +40,22 @@ const WebSocketComponent = (props) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    loadSound();
+    return sound
+      ? () => {
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, []);
+
+  const loadSound = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../../assets/breebles_music.mp3')
+    );
+    setSound(sound);
+  }
 
   return (
     <ScrollView>

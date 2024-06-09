@@ -29,20 +29,16 @@ export default Button;
 
 const styles = StyleSheet.create({
   button: {
+    height: 38,
     justifyContent: "center",
+    alignItems: "center",
     backgroundColor: Colors.primary,
+    borderRadius: 6,
     elevation: 2,
     shadowColor: Colors.black,
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-
-    marginTop: 0,
-    marginBottom: 0,
-    width: "100%",
-    height: 38,
-    borderRadius: 6,
-    paddingVertical: 8,
   },
   pressed: {
     opacity: 0.7,

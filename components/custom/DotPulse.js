@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Animated, StyleSheet, Easing } from 'react-native';
 import { Colors } from '../../constants/config';
 
-const DotPulse = (props) => {
+const DotPulse = () => {
   const dot1Anim = useRef(new Animated.Value(0)).current;
   const dot2Anim = useRef(new Animated.Value(0)).current;
   const dot3Anim = useRef(new Animated.Value(0)).current;
@@ -60,9 +60,6 @@ const DotPulse = (props) => {
 const styles = StyleSheet.create({
   dotContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    height: 22,
-    paddingLeft: 48,
   },
   dot: {
     width: 10,

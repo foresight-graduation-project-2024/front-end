@@ -5,6 +5,7 @@ import * as actions from "./actionTypes";
 
 import { baseUrl } from "../../constants/config";
 import { uiStartLoading, uiStopLoading } from "./Ui";
+import { unsubscribeFromUserTopic } from "./Notification";
 
 export const getUserInfo = (id) => async (dispatch) => {
   try {
@@ -68,7 +69,9 @@ export const accountDeactivatedThunk =
     };
   };
 
-export const authLogout = () => async () => {
+export const authLogout = () => async (dispatch, getState) => {
+  const userId = getState().user.user.id;
+  await unsubscribeFromUserTopic(userId);
   AsyncStorage.removeItem("authToken");
   AsyncStorage.removeItem("role");
   AsyncStorage.removeItem("userID");

@@ -12,9 +12,12 @@
     },
     "assetBundlePatterns": ["**/*"],
     "extra": {
-      "supportsRTL": true
+      "supportsRTL": true,
+      "eas": {
+        "projectId": "882ad5fd-75d1-44c2-9884-3b380a52dcd8"
+      }
     },
-    "plugins": ["expo-localization"],
+    "plugins": ["expo-localization", "@react-native-firebase/app"],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -22,6 +25,7 @@
       }
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#fff"
       }

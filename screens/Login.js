@@ -20,6 +20,7 @@ import {
   verifyLogIn,
 } from "../store/actions/Authentication";
 import DotPulse from "../components/custom/DotPulse";
+import { setupNotifications } from "../store/actions/Notification";
 
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -47,6 +48,7 @@ const Login = ({ navigation }) => {
       const data = await dispatch(verifyLogIn(authData, isRemember));
       if (data.role === "ADMIN") navigation.replace("Manager");
       else navigation.replace("Task");
+      await setupNotifications(navigation, data.id);
     } catch (err) {
       if (err.response.data.code === 5) {
         const newState = await dispatch(signInFailedThunk(true));

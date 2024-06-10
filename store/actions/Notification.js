@@ -2,7 +2,6 @@ import axios from "axios";
 import * as actions from "./actionTypes";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
-// import messaging from '@react-native-firebase/messaging';
 
 import { baseNotificationUrl, baseUrl } from "../../constants/config";
 import { uiStartLoading, uiStopLoading } from "./Ui";
@@ -10,22 +9,19 @@ import { getCurToken } from "./Users";
 
 const subscribeToUserTopic = async (token, userId) => {
   try {
-    const topic = `user-${userId}`;
-    if (token) {
-      const response = await fetch(
-        `${baseNotificationUrl}/fcm/subscriptions/${topic}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify([token]),
-        }
-      );
+    const response = await fetch(
+      `${baseNotificationUrl}/fcm/subscriptions/${userId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([token]),
+      }
+    );
 
-      if (!response.ok) console.log("Failed to subscribe to topic");
-      // else console.log("Connected to topic successfully")
-    } else console.log("Token not found");
+    if (!response.ok) console.log("Failed to subscribe to topic");
+    // else console.log("Connected to topic successfully")
   } catch (error) {
     console.log("Error subscribing to topic:", error);
   }
@@ -34,15 +30,17 @@ const subscribeToUserTopic = async (token, userId) => {
 export const unsubscribeFromUserTopic = async (userId) => {
   try {
     const token = await getExpoPushToken();
-    const topic = `user-${userId}`;
+    // console.log("User id => ", userId);
+    // console.log("Unsubscribe token => ", token)
     if (token) {
       const response = await fetch(
-        `${baseNotificationUrl}/fcm/subscriptions/${topic}/${token}`,
+        `${baseNotificationUrl}/fcm/subscriptions/${userId}`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
+          body: token
         }
       );
 
@@ -101,11 +99,19 @@ export const setupNotifications = async (navigation, userId) => {
 
   // Set up the notification handler for the app
   Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: true,
-      shouldSetBadge: false,
-    }),
+    handleNotification: async ({ request }) => {
+      console.log("Notification received: ", request.content);
+      const { title, body, data } = request.content;
+      return {
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: false,
+        title,
+        body,
+        data,
+        icon: data.icon,
+      };
+    },
   });
 
   // Handle user clicking on a notification and open the screen

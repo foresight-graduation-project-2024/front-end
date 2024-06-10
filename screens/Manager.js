@@ -46,7 +46,7 @@ const Manager = ({ navigation }) => {
 
   const logoutHandler = () => {
     dispatch(authLogout());
-    navigation.navigate("Foresight");
+    navigation.replace("Foresight");
   };
 
   const navToUserDetails = async (user) => {

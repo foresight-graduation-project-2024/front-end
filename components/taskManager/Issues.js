@@ -14,7 +14,6 @@ import {
 } from "../../store/actions/Tasks";
 import Indicator from "./../custom/Indicator";
 import TaskDetailsModal from "../models/TaskDetailsModal";
-import { getUserTasks } from "../../store/actions/Users";
 
 const Issues = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -79,7 +78,7 @@ const Issues = ({ navigation }) => {
 
   const logoutHandler = () => {
     dispatch(authLogout());
-    navigation.navigate("Foresight");
+    navigation.replace("Foresight");
   };
 
   const showTaskDetailsHandler = async (taskId) => {

@@ -17,7 +17,19 @@
         "projectId": "882ad5fd-75d1-44c2-9884-3b380a52dcd8"
       }
     },
-    "plugins": ["expo-localization", "@react-native-firebase/app"],
+    "plugins": [
+      "expo-localization",
+      "@react-native-firebase/app",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification_icon.png",
+          "color": "#ffffff",
+          "sounds": ["./assets/breebles_music.mp3"],
+          "mode": "production"
+        }
+      ]
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -36,6 +48,9 @@
     "locales": {
       "ar": "./assets/i18n/ar.json",
       "en": "./assets/i18n/en.json"
+    },
+    "notification": {
+      "icon": "./assets/notification_icon.png"
     }
   }
 }

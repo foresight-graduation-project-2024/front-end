@@ -99,17 +99,11 @@ export const setupNotifications = async (navigation, userId) => {
 
   // Set up the notification handler for the app
   Notifications.setNotificationHandler({
-    handleNotification: async ({ request }) => {
-      console.log("Notification received: ", request.content);
-      const { title, body, data } = request.content;
+    handleNotification: () => {
       return {
         shouldShowAlert: true,
         shouldPlaySound: true,
         shouldSetBadge: false,
-        title,
-        body,
-        data,
-        icon: data.icon,
       };
     },
   });

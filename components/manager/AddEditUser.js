@@ -201,6 +201,7 @@ const AddEditUser = ({ navigation, route }) => {
               label="Password"
               name="password"
               secure={isSecure}
+              isTextSecured={isSecure}
               value={userDetails.password}
               onUpdateValue={(value) =>
                 changeUserDetailsHandler("password", value)

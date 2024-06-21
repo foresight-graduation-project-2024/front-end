@@ -24,9 +24,7 @@
         "expo-notifications",
         {
           "icon": "./assets/notification_icon.png",
-          "color": "#ffffff",
-          "sounds": ["./assets/breebles_music.mp3"],
-          "mode": "production"
+          "sounds": ["./assets/breebles_music.mp3"]
         }
       ]
     ],

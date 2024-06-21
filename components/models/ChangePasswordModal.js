@@ -9,11 +9,12 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-import { Colors, passwordRegex } from "../../constants/config";
+import { Colors } from "../../constants/config";
 import Input from "../custom/Input";
 import Button from "../custom/Button";
 import DotPulse from "../custom/DotPulse";
 import { changePassword } from "../../store/actions/Users";
+import { passwordRegex } from "../../constants/Validation";
 
 const ChangePasswordModal = (props) => {
   const dispatch = useDispatch();

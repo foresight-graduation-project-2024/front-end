@@ -9,8 +9,9 @@
 
 ## Overview
 
-Welcome to our Predictive Maintenance, designed specifically for the metro lines industry.
-Our Predictive Maintenance System is more than just a tool—it's a revolution in maintenance strategies. By integrating cutting-edge technologies with user-centric design, we provide a holistic solution that addresses the complex needs of the metro lines industry.
+- Welcome to our Predictive Maintenance, designed specifically for the metro lines industry.
+- Our Predictive Maintenance System is more than just a tool—it's a revolution in maintenance strategies. 
+- By integrating cutting-edge technologies with user-centric design, we provide a holistic solution that addresses the complex needs of the metro lines industry.
 
 ## Video Tutorial
 - Pressing on the image will direct you to view the video.

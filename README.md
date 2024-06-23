@@ -13,7 +13,7 @@ Our Predictive Maintenance System is more than just a tool—it's a revolution i
 
 ## Video Tutorial
 
-[![Watch the video](https://imgur.com/42g4mQw)](https://drive.google.com/file/d/1zbsmb2rrDzF10WsBtA50iiNZ-T3O1Kq_/view?usp=sharing)
+[![Watch the video](https://imgur.com/42g4mQw/thumbnail.jpg)](https://drive.google.com/file/d/1zbsmb2rrDzF10WsBtA50iiNZ-T3O1Kq_/view?usp=sharing)
 
 ## Role Scopes
 

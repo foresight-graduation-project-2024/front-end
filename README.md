@@ -16,7 +16,7 @@
 ## Video Tutorial
 - Pressing on the image will direct you to view the video.
 
-[![Watch the video](https://drive.google.com/uc?export=view&id=1KrkZZYJqjtI5UgIXHWttQo6wZJo3DXl8)](https://drive.google.com/file/d/1zbsmb2rrDzF10WsBtA50iiNZ-T3O1Kq_/view?usp=sharing)
+[![Watch the video](https://drive.google.com/file/d/12ApRd87B2mNGQsXka5C3zJOFaV_d2y3O)](https://drive.google.com/file/d/1zbsmb2rrDzF10WsBtA50iiNZ-T3O1Kq_/view?usp=sharing)
 
 ## Role Scopes
 

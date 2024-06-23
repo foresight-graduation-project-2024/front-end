@@ -8,16 +8,18 @@
 - [Author](#author)
 
 ## Overview
+
 Welcome to our Predictive Maintenance, designed specifically for the metro lines industry.
 Our Predictive Maintenance System is more than just a tool—it's a revolution in maintenance strategies. By integrating cutting-edge technologies with user-centric design, we provide a holistic solution that addresses the complex needs of the metro lines industry.
 
 ## Video Tutorial
 
-[![Watch the video](https://imgur.com/42g4mQw/thumbnail.jpg)](https://drive.google.com/file/d/1zbsmb2rrDzF10WsBtA50iiNZ-T3O1Kq_/view?usp=sharing)
+[![Watch the video](https://drive.google.com/uc?export=view&id=1KrkZZYJqjtI5UgIXHWttQo6wZJo3DXl8)](https://drive.google.com/file/d/1zbsmb2rrDzF10WsBtA50iiNZ-T3O1Kq_/view?usp=sharing)
 
 ## Role Scopes
 
 ### Admin
+
 - Can Add a new user to the system.
 - Can Edit any user info and deactivate or activate.
 - Can change the password of a specified user.
@@ -25,6 +27,7 @@ Our Predictive Maintenance System is more than just a tool—it's a revolution i
 - Can search about users by first name, last name, and email.
 
 ### Technical Manager
+
 - After receive a notification, can create a new team.
 - Can edit or delete this team.
 - View the members and add or delete members.
@@ -33,12 +36,14 @@ Our Predictive Maintenance System is more than just a tool—it's a revolution i
 - View all notifications that are received.
 
 ### Team Leader
+
 - View all teams with it is a member or a team leader.
 - View all tasks of the team, which is a team leader, and view the assignee task of the team to it, which is a team leader.
 - Can Add or edit or delete tasks.
 - View all notifications that are received.
 
 ### Member
+
 - View all teams with it is a member.
 - View tasks that is an assignee to it.
 - Can edit the status of task only.

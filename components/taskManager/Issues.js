@@ -8,7 +8,6 @@ import { Colors } from "../../constants/config";
 import IssueCard from "./IssueCard";
 import {
   getAllTasks,
-  getAllTeams,
   getTaskDetails,
   getTeamDetails,
 } from "../../store/actions/Tasks";
@@ -73,7 +72,7 @@ const Issues = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    user.role !== "TECHNICAL_MANAGER" && getTeamTasksForTeamLeader();
+    user.role === "TECHNICAL_MANAGER" ? dispatch(getAllTasks()) : getTeamTasksForTeamLeader();
   }, []);
 
   const logoutHandler = () => {

@@ -1,7 +1,8 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useCallback, useLayoutEffect, useState } from "react";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { authLogout } from "../../store/actions/Authentication";
 import { Colors } from "../../constants/config";
@@ -71,9 +72,9 @@ const Issues = ({ navigation }) => {
     });
   }, []);
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     user.role === "TECHNICAL_MANAGER" ? dispatch(getAllTasks()) : getTeamTasksForTeamLeader();
-  }, []);
+  }, [user.role, dispatch]));
 
   const logoutHandler = () => {
     dispatch(authLogout());

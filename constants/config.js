@@ -1,6 +1,4 @@
-const HOST = "192.168.0.169";
-export const baseUrl = `http://${HOST}:8082`;
-export const baseNotificationUrl = `http://${HOST}:8085`;
+export const baseUrl = "https://kzayufa4f1ra.share.zrok.io";
 
 export const PRIORITY = [ "LOW", "NORMAL", "HIGH" ];
 export const STATUS = ["WAITING","ASSIGNED", "IN_PROGRESS", "FINISHED"];
@@ -8,13 +6,11 @@ export const STATUS = ["WAITING","ASSIGNED", "IN_PROGRESS", "FINISHED"];
 export const Colors = {
   mainBackground: "#f5f5f5",
   primary: "#703ef5",
-  lightPrimary: "#875cff",
   darkPrimary: "#4b2ca0",
   white: "#fff",
   black: "#000",
   lightBlack: "#444",
   error: "#ff1d00",
-  pingError: "#9b095c",
   grey: "#777",
   borderColor: "#BCBCBC",
   lightGrey: "#e7e7e7",

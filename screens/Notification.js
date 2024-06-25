@@ -1,14 +1,14 @@
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useCallback, useLayoutEffect } from "react";
 import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDistanceToNow } from "date-fns";
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { getAllUserNotification } from "../store/actions/Notification";
 import Indicator from "../components/custom/Indicator";
 import { Colors } from "../constants/config";
 import { authLogout } from "../store/actions/Authentication";
-import WebSocketComponent from "../components/notification/WebSocketComponent";
 
 const Notification = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -34,9 +34,9 @@ const Notification = ({ navigation }) => {
     });
   }, []);
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     dispatch(getAllUserNotification(user.id));
-  }, []);
+  }, [user.id, dispatch]));
 
   const logoutHandler = () => {
     dispatch(authLogout());
@@ -45,11 +45,6 @@ const Notification = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <WebSocketComponent
-        userId={user.id}
-        notificationContainer={styles.notificationContainer}
-        dateText={styles.dateText}
-      />
       {isLoading ? (
         <Indicator />
       ) : (

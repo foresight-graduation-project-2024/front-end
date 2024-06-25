@@ -16,6 +16,7 @@ export const getUserInfo = (id) => async (dispatch) => {
       Authorization: `${token}`,
     };
     const response = await axios.get(`${baseUrl}/users/${id}`, { headers });
+    // console.log("getUserInfo ==>", response.data);
     await dispatch(saveUserInfo(response.data));
   } catch (error) {
     console.log("getUserInfo ERROR ==>", error);

@@ -1,8 +1,9 @@
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import * as actions from "./actionTypes";
 import { baseUrl } from "../../constants/config";
 import { uiStartLoading, uiStopLoading } from "./Ui";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const getCurToken = () => async (dispatch) => {
   const token = await AsyncStorage.getItem("authToken");

@@ -1,7 +1,8 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useCallback, useLayoutEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { authLogout } from "../../store/actions/Authentication";
 import { Colors } from "../../constants/config";
@@ -47,7 +48,9 @@ const Teams = ({ navigation }) => {
         </View>
       ),
     });
+  }, []);
 
+  useFocusEffect(useCallback(() => {
     if (user.role === "TECHNICAL_MANAGER")
       dispatch(getAllTasks())
     else {
@@ -57,7 +60,7 @@ const Teams = ({ navigation }) => {
 
     dispatch(getUsers());
     dispatch(getAllTeams());
-  }, []);
+  }, [dispatch, user.id, user.role]))
 
   const logoutHandler = () => {
     dispatch(authLogout());

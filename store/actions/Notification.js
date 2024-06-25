@@ -2,23 +2,29 @@ import axios from "axios";
 import * as actions from "./actionTypes";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { baseNotificationUrl, baseUrl } from "../../constants/config";
+import { baseUrl } from "../../constants/config";
 import { uiStartLoading, uiStopLoading } from "./Ui";
 import { getCurToken } from "./Users";
 
 const subscribeToUserTopic = async (token, userId) => {
   try {
+    console.log("FCM Token => ", token);
+    const authToken = await AsyncStorage.getItem("authToken");
     const response = await fetch(
-      `${baseNotificationUrl}/fcm/subscriptions/${userId}`,
+      `${baseUrl}/fcm/subscriptions/${userId}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `${authToken}`
         },
         body: JSON.stringify([token]),
       }
     );
+
+    // console.log("Response: ", response)
 
     if (!response.ok) console.log("Failed to subscribe to topic");
     // else console.log("Connected to topic successfully")
@@ -32,13 +38,15 @@ export const unsubscribeFromUserTopic = async (userId) => {
     const token = await getExpoPushToken();
     // console.log("User id => ", userId);
     // console.log("Unsubscribe token => ", token)
+    const authToken = await AsyncStorage.getItem("authToken");
     if (token) {
       const response = await fetch(
-        `${baseNotificationUrl}/fcm/subscriptions/${userId}`,
+        `${baseUrl}/fcm/subscriptions/${userId}`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
+            'Authorization': `${authToken}`
           },
           body: token
         }

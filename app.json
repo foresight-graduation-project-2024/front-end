@@ -10,11 +10,13 @@
       "resizeMode": "contain",
       "backgroundColor": "#fff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "extra": {
       "supportsRTL": true,
       "eas": {
-        "projectId": "882ad5fd-75d1-44c2-9884-3b380a52dcd8"
+        "projectId": "8b155b97-0700-45c3-9c3b-e00f2ef2cfc5"
       }
     },
     "plugins": [
@@ -24,21 +26,25 @@
         "expo-notifications",
         {
           "icon": "./assets/notification_icon.png",
-          "sounds": ["./assets/breebles_music.mp3"]
+          "sounds": [
+            "./assets/breebles_music.mp3"
+          ]
         }
       ]
     ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "CFBundleAllowMixedLocalizations": true
+        "CFBundleAllowMixedLocalizations": true,
+        "ExpoLocalization_supportsRTL": true
       }
     },
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#fff"
-      }
+      },
+      "package": "com.mostafa7amdy.foresight"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -49,6 +55,12 @@
     },
     "notification": {
       "icon": "./assets/notification_icon.png"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/8b155b97-0700-45c3-9c3b-e00f2ef2cfc5"
     }
   }
 }

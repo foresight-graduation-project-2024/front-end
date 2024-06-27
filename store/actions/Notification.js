@@ -24,10 +24,7 @@ const subscribeToUserTopic = async (token, userId) => {
       }
     );
 
-    // console.log("Response: ", response)
-
     if (!response.ok) console.log("Failed to subscribe to topic");
-    // else console.log("Connected to topic successfully")
   } catch (error) {
     console.log("Error subscribing to topic:", error);
   }
@@ -36,8 +33,6 @@ const subscribeToUserTopic = async (token, userId) => {
 export const unsubscribeFromUserTopic = async (userId) => {
   try {
     const token = await getExpoPushToken();
-    // console.log("User id => ", userId);
-    // console.log("Unsubscribe token => ", token)
     const authToken = await AsyncStorage.getItem("authToken");
     if (token) {
       const response = await fetch(
@@ -53,7 +48,6 @@ export const unsubscribeFromUserTopic = async (userId) => {
       );
 
       if (!response.ok) console.log("Failed to unsubscribe from topic");
-      // else console.log(`Unsubscribed from topic: ${topic}`);
     } else console.log("Token not found");
   } catch (error) {
     console.log("Error unsubscribing from topic:", error);
@@ -89,18 +83,20 @@ const getExpoPushToken = async () => {
     }
   }
 
-  const token = (
-    await Notifications.getExpoPushTokenAsync({
+  try {
+    const tokenData = await Notifications.getExpoPushTokenAsync({
       projectId: Constants.expoConfig?.extra?.eas.projectId,
-    })
-  ).data;
-  return token;
+    });
+    const token = tokenData.data;
+    return token;
+  } catch (error) {
+    console.log("Error getting Expo push token:", error);
+  }
 };
 
 export const setupNotifications = async (navigation, userId) => {
   const token = await getExpoPushToken();
 
-  // console.log("Token: ", token);
   if (token) {
     await subscribeToUserTopic(token, userId);
   }
@@ -131,24 +127,6 @@ export const setupNotifications = async (navigation, userId) => {
     Notifications.addNotificationResponseReceivedListener(
       handleNotificationClick
     );
-
-  // Handle user opening the app from a notification (when the app is in the background)
-  // messaging().onNotificationOpenedApp((remoteMessage) => {
-  //   const screen = remoteMessage?.data?.screen;
-  //   if (screen) navigation.navigate(screen);
-  //   else navigation.navigate("Notification");
-  // });
-
-  // Check if the app was opened from a notification (when the app was completely quit)
-  // messaging()
-  //   .getInitialNotification()
-  //   .then((remoteMessage) => {
-  //     if (remoteMessage) {
-  //       const screen = remoteMessage?.data?.screen;
-  //       if (screen) navigation.navigate(screen);
-  //       else navigation.navigate("Notification");
-  //     }
-  //   });
 
   return () => {
     notificationClickSubscription.remove();

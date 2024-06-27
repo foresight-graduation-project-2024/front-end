@@ -1,4 +1,8 @@
-export const baseUrl = "https://kzayufa4f1ra.share.zrok.io";
+// const HOST = "192.168.1.15";
+// export const baseUrl = `http://${HOST}:8082`;
+// export const baseNotificationUrl = `http://${HOST}:8085`;
+
+export const baseUrl = "https://5uegxvqp0wgr.share.zrok.io";
 
 export const PRIORITY = [ "LOW", "NORMAL", "HIGH" ];
 export const STATUS = ["WAITING","ASSIGNED", "IN_PROGRESS", "FINISHED"];

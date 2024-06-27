@@ -32,6 +32,7 @@ const Login = ({ navigation }) => {
   const [isRemember, setIsRemember] = useState(false);
   const [isSecure, setIsSecure] = useState(true);
   const [isLoginFailed, setIsLoginFailed] = useState(false);
+  const [isConnectionFailed, setIsConnectionFailed] = useState(false);
   const [isAccountDeactivated, setIsAccountDeactivated] = useState(false);
 
   const toggleCheckbox = useCallback(() => {
@@ -56,7 +57,7 @@ const Login = ({ navigation }) => {
       } else if (err.response.data.code === 6) {
         const newState = await dispatch(accountDeactivatedThunk(true));
         setIsAccountDeactivated(newState.auth.accountDeactivated);
-      } else console.log("VerifyLogIn ERROR ===> ", err);
+      } else setIsConnectionFailed(true);
     }
   };
 
@@ -97,6 +98,10 @@ const Login = ({ navigation }) => {
 
         {isAccountDeactivated && (
           <Text style={styles.validation}>{i18n.t("yourDeactivate")}</Text>
+        )}
+
+        {isConnectionFailed && (
+          <Text style={styles.validation}>Connection Failed, Please try again!</Text>
         )}
       </View>
 

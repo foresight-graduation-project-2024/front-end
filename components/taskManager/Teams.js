@@ -8,7 +8,11 @@ import { authLogout } from "../../store/actions/Authentication";
 import { Colors } from "../../constants/config";
 import TeamCard from "./TeamCard";
 import AddEditTeamModal from "./../models/AddEditTeamModal";
-import { getAllTasks, getAllTeams, getTeamDetails } from "../../store/actions/Tasks";
+import {
+  getAllTasks,
+  getAllTeams,
+  getTeamDetails,
+} from "../../store/actions/Tasks";
 import {
   getUsers,
   getUserTasks,
@@ -51,8 +55,7 @@ const Teams = ({ navigation }) => {
   }, []);
 
   useFocusEffect(useCallback(() => {
-    if (user.role === "TECHNICAL_MANAGER")
-      dispatch(getAllTasks())
+    if (user.role === "TECHNICAL_MANAGER") dispatch(getAllTasks());
     else {
       dispatch(getUserTasks(user.id))
       dispatch(getUserTeams(user.id));
@@ -75,8 +78,8 @@ const Teams = ({ navigation }) => {
     setShowAddIssue(false);
   };
 
-  const teamTasksHandler = async (data) => {
-    const teamData = await dispatch(getTeamDetails(data.teamId))
+  const teamTasksHandler = async (id) => {
+    const teamData = await dispatch(getTeamDetails(id));
     teamData && navigation.navigate("Board", { teamData });
   };
 
@@ -99,7 +102,7 @@ const Teams = ({ navigation }) => {
                 teamName={data.name}
                 teamDesc={data.description}
                 teamKey={data.signature}
-                onPress={() => teamTasksHandler(data)}
+                onPress={() => teamTasksHandler(data.teamId)}
               />
             ))
           ) : (
@@ -116,7 +119,7 @@ const styles = StyleSheet.create({
     flexDirection: "row-reverse",
     alignItems: "center",
     gap: 16,
-    marginLeft: 12,
+    marginRight: 12,
   },
   container: {
     flex: 1,

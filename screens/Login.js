@@ -45,6 +45,9 @@ const Login = ({ navigation }) => {
 
   const loginHandler = async () => {
     try {
+      setIsLoginFailed(false);
+      setIsAccountDeactivated(false);
+      setIsConnectionFailed(false);
       const authData = { email, password };
       const data = await dispatch(verifyLogIn(authData, isRemember));
       if (data.role === "ADMIN") navigation.replace("Manager");

@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:627453827134:android:d29ea2847cc81d809ed96f",
+        "android_client_info": {
+          "package_name": "com.mostafa7amdy.foresight"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlimwtgqOPfi4AT59ndt3o9YAgR3vfL4I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:627453827134:android:7231dc9a32ce10729ed96f",
         "android_client_info": {
           "package_name": "task.management"

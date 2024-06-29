@@ -22,7 +22,14 @@ import Button from "../custom/Button";
 import DotPulse from "../custom/DotPulse";
 import { createUserObject, timeFormat } from "../../constants/Utility";
 
-const TaskDetailsModal = (props) => {
+const TaskDetailsModal = ({
+  showModal = false,
+  closeModal = () => {},
+  taskDetails = null,
+  allMembers = [],
+  team = null,
+  navigation = null
+}) => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.ui.isLoading);
   const user = useSelector((state) => state.user.user);
@@ -31,11 +38,11 @@ const TaskDetailsModal = (props) => {
   const initialDropdownState = {
     status: {
       isVisible: false,
-      selected: props.taskDetails ? props.taskDetails.status : "",
+      selected: taskDetails ? taskDetails.status : "",
     },
     priority: {
       isVisible: false,
-      selected: props.taskDetails ? props.taskDetails.priority : "",
+      selected: taskDetails ? taskDetails.priority : "",
     },
   };
 
@@ -50,37 +57,37 @@ const TaskDetailsModal = (props) => {
   const [selectedAssignee, setSelectedAssignee] = useState("");
 
   useEffect(() => {
-    if (props.taskDetails) {
+    if (taskDetails) {
       setDropdowns((prevState) => ({
         ...prevState,
         status: {
           ...prevState.status,
-          selected: props.taskDetails.status,
+          selected: taskDetails.status,
         },
         priority: {
           ...prevState.priority,
-          selected: props.taskDetails.priority,
+          selected: taskDetails.priority,
         },
       }));
     }
-  }, [props.taskDetails]);
+  }, [taskDetails]);
 
-  const assigneeMembers = props.allMembers?.map((item) => ({
+  const assigneeMembers = allMembers?.map((item) => ({
     key: item.memberId,
     value: `${item.email}`,
   }));
 
   const startDateFormat = startTime
     ? timeFormat(startTime)
-    : props.taskDetails?.startDate.replace("T", ", ");
+    : taskDetails?.startDate.replace("T", ", ");
 
   const endDateFormat = endTime
     ? timeFormat(endTime)
-    : props.taskDetails?.endDate.replace("T", ", ");
+    : taskDetails?.endDate.replace("T", ", ");
 
   const constraints =
     user.role === "TECHNICAL_MANAGER" ||
-    props.team?.teamLeader?.email === user.email;
+    team?.teamLeader?.email === user.email;
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -132,17 +139,16 @@ const TaskDetailsModal = (props) => {
 
   const deleteTaskHandler = async () => {
     const resp = await dispatch(
-      deleteTask(props.taskDetails.teamId, props.taskDetails.taskId)
+      deleteTask(taskDetails.teamId, taskDetails.taskId)
     );
     if (resp) {
       closeDeleteModal();
-      props.closeModal();
-      props.navigation.goBack();
+      closeModal();
+      navigation.goBack();
     }
   };
 
   const editTaskHandler = async () => {
-    const taskInfo = props.taskDetails;
     let assigneeUser = users.filter((user) => user.email === selectedAssignee);
     assigneeUser =
       Array.isArray(assigneeUser) && assigneeUser?.length > 0
@@ -150,26 +156,26 @@ const TaskDetailsModal = (props) => {
         : null;
 
     const taskData = {
-      taskId: taskInfo.taskId,
-      teamId: taskInfo.teamId,
-      title: taskInfo.title,
-      summary: newTaskSummary || taskInfo.summary,
-      description: newTaskDesc || taskInfo.description,
+      taskId: taskDetails.taskId,
+      teamId: taskDetails.teamId,
+      title: taskDetails.title,
+      summary: newTaskSummary || taskDetails.summary,
+      description: newTaskDesc || taskDetails.description,
       status: dropdowns.status.selected,
       priority: dropdowns.priority.selected,
-      startDate: startTime?.toISOString() || taskInfo.startDate,
-      endDate: endTime?.toISOString() || taskInfo.endDate,
-      assignee: assigneeUser || taskInfo.assignee,
+      startDate: startTime?.toISOString() || taskDetails.startDate,
+      endDate: endTime?.toISOString() || taskDetails.endDate,
+      assignee: assigneeUser || taskDetails.assignee,
     };
-    const resp = await dispatch(editTask(taskInfo.teamId, taskData));
+    const resp = await dispatch(editTask(taskDetails.teamId, taskData));
     if (resp) {
-      props.closeModal();
-      props.navigation.goBack();
+      closeModal();
+      navigation.goBack();
     }
   };
 
   return (
-    <Modal animationType="slide" style={styles.modal} visible={props.showModal}>
+    <Modal animationType="slide" style={styles.modal} visible={showModal}>
       <ConfirmModal
         showModal={deleteModal}
         closeModal={closeDeleteModal}
@@ -180,7 +186,7 @@ const TaskDetailsModal = (props) => {
         <ScrollView>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <TouchableOpacity onPress={props.closeModal}>
+              <TouchableOpacity onPress={closeModal}>
                 <Image
                   source={require("../../assets/close.png")}
                   style={styles.closeImg}
@@ -196,11 +202,11 @@ const TaskDetailsModal = (props) => {
               )}
             </View>
 
-            <Text style={styles.taskNum}>{props.taskDetails?.title}</Text>
+            <Text style={styles.taskNum}>{taskDetails?.title}</Text>
             <TextInput
               style={styles.taskSummary}
               multiline
-              defaultValue={props.taskDetails?.summary}
+              defaultValue={taskDetails?.summary}
               onChangeText={(text) => {
                 setNewTaskSummary(text);
               }}
@@ -212,7 +218,7 @@ const TaskDetailsModal = (props) => {
               <TextInput
                 style={styles.descText}
                 multiline
-                defaultValue={props.taskDetails?.description}
+                defaultValue={taskDetails?.description}
                 onChangeText={(text) => {
                   setNewTaskDesc(text);
                 }}
@@ -252,15 +258,15 @@ const TaskDetailsModal = (props) => {
                 data={assigneeMembers}
                 setSelected={onSelectedAssignee}
                 defaultOption={{
-                  key: props.taskDetails?.assignee?.memberId || null,
-                  value: props.taskDetails?.assignee?.email || null,
+                  key: taskDetails?.assignee?.memberId || null,
+                  value: taskDetails?.assignee?.email || null,
                 }}
               />
             ) : (
               <Text>
-                {props.taskDetails?.assignee?.firstname +
+                {taskDetails?.assignee?.firstname +
                   " " +
-                  props.taskDetails?.assignee?.lastname}
+                  taskDetails?.assignee?.lastname}
               </Text>
             )}
 
@@ -313,7 +319,7 @@ const TaskDetailsModal = (props) => {
             {isLoading ? <DotPulse /> : "Save"}
           </Button>
           <Button
-            onPress={props.closeModal}
+            onPress={closeModal}
             btnStyle={styles.btnStyle}
             textColor={Colors.lightBlack}
           >

@@ -19,7 +19,13 @@ import Dropdown from "../custom/Dropdown";
 import DotPulse from "../custom/DotPulse";
 import Button from "../custom/Button";
 
-const AddTaskModal = (props) => {
+const AddTaskModal = ({
+  showModal = false,
+  closeModal = () => {},
+  teamId = null,
+  signature = '',
+  navigation = null,
+}) => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.ui.isLoading);
 
@@ -83,7 +89,7 @@ const AddTaskModal = (props) => {
 
   const addTaskHandler = async () => {
     const taskData = {
-      title: props.signature,
+      title: signature,
       summary,
       description,
       status: dropdowns.status.selected,
@@ -91,10 +97,10 @@ const AddTaskModal = (props) => {
       startDate: startTime.toISOString(),
       endDate: endTime.toISOString(),
     };
-    // console.log(props.teamId);
+    // console.log(teamId);
     // console.log(taskData);
-    const resp = await dispatch(addTask(props.teamId, taskData));
-    resp && props.navigation.goBack();
+    const resp = await dispatch(addTask(teamId, taskData));
+    resp && navigation.goBack();
     clearInputs();
   };
 
@@ -120,9 +126,9 @@ const AddTaskModal = (props) => {
     <Modal
       animationType="slide"
       style={styles.modal}
-      visible={props.showModal}
-      onRequestClose={props.closeModal}
-      onBackdropPress={props.closeModal}
+      visible={showModal}
+      onRequestClose={closeModal}
+      onBackdropPress={closeModal}
     >
       <View style={styles.modalView}>
         <ScrollView style={styles.scrolling}>
@@ -216,7 +222,7 @@ const AddTaskModal = (props) => {
                 {isLoading ? <DotPulse /> : "Add"}
               </Button>
               <Button
-                onPress={props.closeModal}
+                onPress={closeModal}
                 btnStyle={styles.btnStyle}
                 textColor={Colors.lightBlack}
               >
